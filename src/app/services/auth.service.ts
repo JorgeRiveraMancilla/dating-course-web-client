@@ -1,26 +1,29 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Auth } from '../interfaces/auth';
 import { map, Observable } from 'rxjs';
 import { LoginDto } from '../interfaces/login-dto';
 import { RegisterDto } from '../interfaces/register-dto';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly baseUrl = environment.apiUrl;
   private readonly currentAuth = signal<Auth | null>(null);
   private readonly roles = signal<string[]>(this.getRolesFromToken());
 
   constructor() {
-    // Recuperar auth del localStorage al iniciar
-    const storedAuth = localStorage.getItem('auth');
-    if (storedAuth) {
-      this.currentAuth.set(JSON.parse(storedAuth));
-      this.roles.set(this.getRolesFromToken());
+    if (isPlatformBrowser(this.platformId)) {
+      const storedAuth = localStorage.getItem('auth');
+      if (storedAuth) {
+        this.currentAuth.set(JSON.parse(storedAuth));
+        this.roles.set(this.getRolesFromToken());
+      }
     }
   }
 
@@ -66,12 +69,16 @@ export class AuthService {
   }
 
   setCurrentAuth(auth: Auth): void {
-    localStorage.setItem('auth', JSON.stringify(auth));
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('auth', JSON.stringify(auth));
+    }
     this.currentAuth.set(auth);
   }
 
   logout(): void {
-    localStorage.removeItem('auth');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('auth');
+    }
     this.currentAuth.set(null);
     this.roles.set([]);
   }
