@@ -1,0 +1,93 @@
+<p-toast></p-toast>
+
+<div style="width: 600px">
+  <p-card class="m-0 p-0">
+    <h1 class="text-center text-2xl font-medium my-0 pb-3">Iniciar sesión</h1>
+
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-column gap-3"
+    >
+      <div class="grid">
+        <!-- Email -->
+        <div class="col-12">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="email" class="font-medium"
+              >Correo electrónico</label
+            >
+            <input
+              id="email"
+              type="email"
+              pInputText
+              class="w-full"
+              placeholder="Ingrese su correo electrónico..."
+              formControlName="email"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  loginForm.get('email')?.invalid &&
+                  loginForm.get('email')?.touched
+              }"
+            />
+            @if (loginForm.get('email')?.invalid &&
+            loginForm.get('email')?.touched) {
+            <small class="p-error block mt-1"
+              >Correo electrónico inválido.</small
+            >
+            }
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="col-12">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="password" class="font-medium">Contraseña</label>
+            <p-password
+              id="password"
+              class="w-full"
+              styleClass="w-full"
+              [inputStyle]="{ width: '100%' }"
+              [style]="{ width: '100%' }"
+              placeholder="Ingrese su contraseña..."
+              formControlName="password"
+              [feedback]="false"
+              [toggleMask]="true"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  loginForm.get('password')?.invalid &&
+                  loginForm.get('password')?.touched
+              }"
+            ></p-password>
+            @if (loginForm.get('password')?.invalid &&
+            loginForm.get('password')?.touched) {
+            <small class="p-error block mt-1"
+              >La contraseña debe tener al menos 8 caracteres.</small
+            >
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de inicio de sesión -->
+      <p-button
+        type="submit"
+        label="Iniciar sesión"
+        [outlined]="true"
+        styleClass="w-full"
+        [loading]="loading()"
+        [disabled]="loginForm.invalid"
+      ></p-button>
+
+      <!-- Link a registro -->
+      <div class="text-center mt-3">
+        <span class="text-600">¿No tienes una cuenta? </span>
+        <a
+          routerLink="/register"
+          class="font-medium text-blue-500 no-underline hover:underline"
+        >
+          Regístrate aquí.
+        </a>
+      </div>
+    </form>
+  </p-card>
+</div>
