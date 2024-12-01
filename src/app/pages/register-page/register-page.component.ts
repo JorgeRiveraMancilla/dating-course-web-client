@@ -95,7 +95,7 @@ export class RegisterPageComponent implements OnInit {
   }
 
   matchValidator(matchTo: string): ValidatorFn {
-    return (control: AbstractControl) => {
+    return (control: AbstractControl): ValidationErrors | null => {
       return control.value === control.parent?.get(matchTo)?.value
         ? null
         : { match: true };
