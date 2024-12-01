@@ -13,7 +13,7 @@ import { User } from '../../interfaces/user';
 export class UserCardComponent {
   @Input() user!: User;
 
-  defaultImageUrl = '/assets/user.png';
+  readonly defaultImageUrl = '/assets/user.png';
   hover = false;
 
   onProfileView(): void {}
