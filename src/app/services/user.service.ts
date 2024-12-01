@@ -22,33 +22,40 @@ export class UserService {
   auth = this.authService.getCurrentAuth();
   userParams: UserParams = new UserParams(this.auth);
 
-  getUsers(userParams: UserParams) {
-    const response = this.userCache.get(Object.values(userParams).join('-'));
+  getUsers(userParams?: UserParams): Observable<PaginatedResult<User[]>> {
+    if (userParams) this.userParams = userParams;
 
-    if (response) return of(response, this.paginatedResult);
+    const response = this.userCache.get(
+      Object.values(this.userParams).join('-')
+    );
+
+    if (response) return of(response);
 
     const params = new HttpParams()
-      .append('minAge', userParams.minAge)
-      .append('maxAge', userParams.maxAge)
-      .append('gender', userParams.gender)
-      .append('orderBy', userParams.orderBy);
+      .append('minAge', this.userParams.minAge.toString())
+      .append('maxAge', this.userParams.maxAge.toString())
+      .append('gender', this.userParams.gender)
+      .append('orderBy', this.userParams.orderBy);
 
     return this.http
       .get<User[]>(`${this.baseUrl}/user`, { observe: 'response', params })
-      .subscribe({
-        next: (response) => {
+      .pipe(
+        map((response) => {
           setPaginatedResponse(response, this.paginatedResult);
+
           this.userCache.set(
             Object.values(this.userParams).join('-'),
-            response
+            this.paginatedResult() ?? null
           );
-        },
-      });
+
+          return this.paginatedResult()!;
+        })
+      );
   }
 
   getUser(id: number): Observable<User> {
     const user = [...this.userCache.values()]
-      .reduce((arr, elem) => arr.concat(elem.result), [])
+      .reduce((arr, elem) => arr.concat(elem?.result || []), [])
       .find((user: User) => user.id === id);
 
     if (user) return of(user);
