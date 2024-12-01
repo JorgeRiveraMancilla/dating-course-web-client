@@ -1,0 +1,133 @@
+<!-- User Card Component -->
+<div
+  class="flex flex-column"
+  [style]="{
+    width: '280px',
+    height: '360px',
+    'background-color': 'white',
+    'border-radius': '8px',
+    'box-shadow': '0 2px 4px rgba(0,0,0,0.1)'
+  }"
+>
+  <!-- Image Container with Hover Effects -->
+  <div
+    class="relative"
+    [style]="{
+      height: '280px',
+      'border-radius': '8px 8px 0 0',
+      overflow: 'hidden'
+    }"
+  >
+    <img
+      [src]="user.mainPhoto?.url || defaultImageUrl"
+      alt="user picture"
+      [style]="{
+        width: '100%',
+        height: '100%',
+        'object-fit': 'cover',
+        'object-position': 'center'
+      }"
+    />
+
+    <!-- Overlay Icons on Hover -->
+    <div
+      class="flex flex-row align-items-end justify-content-center gap-3 absolute w-full h-full top-0 left-0 pb-4"
+      [style]="{
+        'background-color': 'rgba(0,0,0,0.3)',
+        opacity: hover ? '1' : '0',
+        transition: 'opacity 0.3s'
+      }"
+      (mouseenter)="hover = true"
+      (mouseleave)="hover = false"
+    >
+      <a
+        class="flex align-items-center justify-content-center"
+        [style]="{
+          width: '40px',
+          height: '40px',
+          'border-radius': '50%',
+          'background-color': 'white',
+          color: '#666',
+          'text-decoration': 'none'
+        }"
+        href="javascript:void(0)"
+        (click)="onProfileView()"
+      >
+        <i class="pi pi-user"></i>
+      </a>
+      <a
+        class="flex align-items-center justify-content-center"
+        [style]="{
+          width: '40px',
+          height: '40px',
+          'border-radius': '50%',
+          'background-color': 'white',
+          color: '#666',
+          'text-decoration': 'none'
+        }"
+        href="javascript:void(0)"
+        (click)="onLike()"
+      >
+        <i class="pi pi-heart"></i>
+      </a>
+      <a
+        class="flex align-items-center justify-content-center"
+        [style]="{
+          width: '40px',
+          height: '40px',
+          'border-radius': '50%',
+          'background-color': 'white',
+          color: '#666',
+          'text-decoration': 'none'
+        }"
+        href="javascript:void(0)"
+        (click)="onChat()"
+      >
+        <i class="pi pi-comments"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- User Info Section -->
+  <div
+    class="flex flex-column justify-content-between"
+    [style]="{ padding: '1rem', height: '80px' }"
+  >
+    <!-- Name and Age Row -->
+    <div class="flex align-items-center justify-content-between w-full">
+      <div class="flex align-items-center gap-2" [style]="{ maxWidth: '85%' }">
+        <i
+          class="pi pi-circle-fill shrink-0"
+          [style]="{ color: '#4CAF50', 'font-size': '0.75rem' }"
+        ></i>
+        <span
+          class="text-ellipsis block white-space-nowrap overflow-hidden"
+          [style]="{ 'font-size': '1rem', color: '#333', 'font-weight': '500' }"
+        >
+          {{ user.knownAs }}, {{ user.age }} años
+        </span>
+      </div>
+      <a
+        class="shrink-0"
+        href="javascript:void(0)"
+        (click)="onLikeProfile()"
+        [style]="{ color: '#666', 'text-decoration': 'none' }"
+      >
+        <i class="pi pi-heart"></i>
+      </a>
+    </div>
+
+    <!-- Location -->
+    <div class="flex align-items-center gap-2 w-full">
+      <i class="pi pi-map-marker shrink-0" [style]="{ color: '#666' }"></i>
+      <div class="overflow-hidden" [style]="{ maxWidth: 'calc(100% - 24px)' }">
+        <span
+          class="block text-ellipsis white-space-nowrap"
+          [style]="{ color: '#666', 'font-size': '0.875rem' }"
+        >
+          {{ user.city }}, {{ user.country }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
