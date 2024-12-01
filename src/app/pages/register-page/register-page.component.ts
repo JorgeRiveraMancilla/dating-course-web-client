@@ -112,37 +112,9 @@ export class RegisterPageComponent implements OnInit {
   onSubmit(): void {
     if (this.registerForm.invalid) return;
 
-    const formValues = this.registerForm.value;
-
-    if (
-      !formValues.userName ||
-      !formValues.email ||
-      !formValues.knownAs ||
-      !formValues.gender ||
-      !formValues.birthDate ||
-      !formValues.city ||
-      !formValues.country ||
-      !formValues.password ||
-      !formValues.confirmPassword
-    ) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-      });
-      return;
-    }
-
-    if (formValues.password !== formValues.confirmPassword) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Las contraseñas no coinciden',
-      });
-      return;
-    }
-
     this.loading.set(true);
 
+    const formValues = this.registerForm.value;
     const formattedDate = formValues.birthDate.toISOString().split('T')[0];
 
     const registerData: RegisterDto = {
