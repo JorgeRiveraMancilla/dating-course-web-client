@@ -1,0 +1,124 @@
+<div class="grid">
+  <!-- User Info Card -->
+  <div class="col-12 md:col-4">
+    <p-card>
+      <ng-template pTemplate="header">
+        <img
+          [src]="user.mainPhoto?.url || defaultImageUrl"
+          [alt]="user.knownAs"
+          class="w-full"
+        />
+      </ng-template>
+
+      <div class="flex flex-column gap-3">
+        <div class="flex align-items-center gap-2">
+          <i
+            class="pi pi-circle-fill text-green-500"
+            style="font-size: 0.75rem"
+          ></i>
+          <span class="text-green-500">Conectado ahora</span>
+        </div>
+
+        <div>
+          <span class="font-bold block mb-2">Ubicación:</span>
+          <span>{{ user.city }}, {{ user.country }}</span>
+        </div>
+
+        <div>
+          <span class="font-bold block mb-2">Edad:</span>
+          <span>{{ user.age }} años</span>
+        </div>
+
+        <div>
+          <span class="font-bold block mb-2">Última conexión:</span>
+          <span>{{ user.lastActive }}</span>
+        </div>
+
+        <div>
+          <span class="font-bold block mb-2">Usuario desde:</span>
+          <span>{{ user.created | date : 'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="flex gap-2">
+          <p-button
+            label="Like"
+            icon="pi pi-heart"
+            styleClass="p-button-outlined w-6"
+          ></p-button>
+
+          <p-button
+            label="Message"
+            icon="pi pi-send"
+            severity="success"
+            styleClass="p-button-outlined w-6"
+            (onClick)="selectTab('Messages')"
+          ></p-button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <!-- User Details Tabs -->
+  <div class="col-12 md:col-8">
+    <p-tabView [(activeIndex)]="activeTabIndex" (onChange)="($event)">
+      <!-- About Tab -->
+      <p-tabPanel [header]="'About ' + user.knownAs">
+        <div class="flex flex-column gap-4">
+          <div>
+            <h3>Descripción</h3>
+            <p-divider></p-divider>
+            <p>{{ user.introduction }}</p>
+          </div>
+
+          <div>
+            <h3>Looking for</h3>
+            <p-divider></p-divider>
+            <p>{{ user.lookingFor }}</p>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Interests Tab -->
+      <p-tabPanel header="Interests">
+        <h3>Interests</h3>
+        <p-divider></p-divider>
+        <p>{{ user.interests }}</p>
+      </p-tabPanel>
+
+      <!-- Photos Tab -->
+      <p-tabPanel header="Photos">
+        @if (activeTabIndex === 2) {
+        <p-galleria
+          [value]="userImages"
+          [responsiveOptions]="[
+            {
+              breakpoint: '1024px',
+              numVisible: 5
+            },
+            {
+              breakpoint: '768px',
+              numVisible: 3
+            },
+            {
+              breakpoint: '560px',
+              numVisible: 1
+            }
+          ]"
+          [containerStyle]="{ 'max-width': '800px', margin: 'auto' }"
+          [numVisible]="5"
+          [circular]="true"
+          [showItemNavigators]="true"
+          [showThumbnails]="true"
+          [showIndicators]="true"
+        >
+        </p-galleria>
+        }
+      </p-tabPanel>
+
+      <!-- Messages Tab -->
+      <p-tabPanel header="Messages"> Falta... </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
