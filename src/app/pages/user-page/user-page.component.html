@@ -1,0 +1,131 @@
+<!-- Gallery Container -->
+<div class="flex flex-column gap-3">
+  <!-- Filters Form -->
+  <form [formGroup]="filterForm" class="flex justify-content-center gap-3">
+    <div class="flex flex-column justify-content-center">
+      <label htmlFor="minAge" class="font-medium"> Desde: </label>
+
+      <div class="flex flex-row align-items-center">
+        <p-inputNumber
+          inputId="minAge"
+          formControlName="minAge"
+          [style]="{ width: '8rem' }"
+          [inputStyle]="{ width: '3rem', textAlign: 'center' }"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          spinnerMode="horizontal"
+          decrementButtonClass="p-button-secondary"
+          incrementButtonClass="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+        />
+
+        @if (filterForm.get('minAge')?.invalid &&
+        filterForm.get('minAge')?.touched) {
+        <i
+          class="ml-1 pi pi-exclamation-circle"
+          style="color: #f44336"
+          pTooltip="Debe ser mayor o igual que 18 años"
+          tooltipPosition="bottom"
+        ></i>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-column justify-content-center">
+      <label htmlFor="maxAge" class="font-medium"> Hasta: </label>
+
+      <div class="flex flex-row align-items-center">
+        <p-inputNumber
+          inputId="maxAge"
+          formControlName="maxAge"
+          [style]="{ width: '8rem' }"
+          [inputStyle]="{ width: '3rem', textAlign: 'center' }"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          spinnerMode="horizontal"
+          decrementButtonClass="p-button-secondary"
+          incrementButtonClass="p-button-secondary"
+          incrementButtonIcon="pi pi-plus"
+          decrementButtonIcon="pi pi-minus"
+        />
+
+        @if (filterForm.get('maxAge')?.invalid &&
+        filterForm.get('maxAge')?.touched) {
+        <i
+          class="ml-1 pi pi-exclamation-circle"
+          style="color: red"
+          pTooltip="Debe ser mayor o igual que la edad mínima"
+          tooltipPosition="bottom"
+        ></i>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-column justify-content-center">
+      <label htmlFor="gender" class="font-medium">Género</label>
+
+      <p-dropdown
+        id="gender"
+        class="w-full"
+        [style]="{ width: '8rem' }"
+        formControlName="gender"
+        [options]="genderOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccione su género..."
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            filterForm.get('gender')?.invalid &&
+            filterForm.get('gender')?.touched
+        }"
+      ></p-dropdown>
+    </div>
+
+    <div class="flex flex-column justify-content-end">
+      <p-button
+        severity="secondary"
+        icon="pi pi-sync"
+        (onClick)="resetFilters()"
+      >
+      </p-button>
+    </div>
+  </form>
+
+  <!-- User Cards Grid -->
+  <div class="flex flex-wrap justify-content-center gap-3">
+    @for (user of users; track $index) {
+    <app-user-card [user]="user"></app-user-card>
+    } @empty {
+    <div
+      class="w-full flex justify-content-center align-items-center"
+      [style]="{ minHeight: '300px' }"
+    >
+      <div class="flex flex-column align-items-center gap-3">
+        <i
+          class="pi pi-users"
+          [style]="{ fontSize: '3rem', color: '#666' }"
+        ></i>
+        <span class="text-500">
+          No se encontraron usuarios con los filtros seleccionados
+        </span>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (0 < userPagination.totalItems) {
+  <div class="flex justify-content-center mt-3">
+    <p-paginator
+      [rows]="userPagination.itemsPerPage"
+      [totalRecords]="userPagination.totalItems"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"
+      (onPageChange)="onPageChange($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+      [style]="{ 'border-width': '1px 0 0 0' }"
+    ></p-paginator>
+  </div>
+  }
+</div>
