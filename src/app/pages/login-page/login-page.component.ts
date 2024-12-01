@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  AbstractControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
@@ -28,34 +35,46 @@ import { LoginDto } from '../../interfaces/login-dto';
   templateUrl: './login-page.component.html',
   styles: ``,
 })
-export class LoginPageComponent {
-  private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private readonly messageService = inject(MessageService);
+export class LoginPageComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
 
   loading = signal(false);
 
-  loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-  });
+  loginForm: FormGroup = new FormGroup({});
+
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          this.alphanumericValidator(),
+        ],
+      ],
+    });
+  }
+
+  alphanumericValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const regex = /^[a-zA-Z0-9]*$/;
+      return regex.test(control.value) ? null : { alphanumeric: true };
+    };
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    const formValues = this.loginForm.value;
-
-    if (!formValues.email || !formValues.password) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Todos los campos son requeridos',
-      });
-      return;
-    }
-
     this.loading.set(true);
+    const formValues = this.loginForm.value;
 
     const loginData: LoginDto = {
       email: formValues.email,
