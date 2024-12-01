@@ -55,7 +55,7 @@ export class UserPageComponent implements OnInit, OnDestroy {
     { label: 'Masculino', value: 'male' },
     { label: 'Femenino', value: 'female' },
   ];
-  debounceTime = 1000;
+  readonly debounceTime = 1000;
 
   ngOnInit(): void {
     this.initializeForm();
