@@ -100,6 +100,10 @@ export class UserService {
     return this.paramsService.resetParams(this.auth);
   }
 
+  getPaginatedResult(): PaginatedResult<User[]> | null {
+    return this.paginatedResult();
+  }
+
   // Private methods
   private fetchUsers(params: UserParams): Observable<PaginatedResult<User[]>> {
     const httpParams = this.buildHttpParams(params);
