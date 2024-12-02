@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { setPaginatedResponse } from '../helpers/paginationHelper';
 import { PaginatedResult } from '../interfaces/paginated-result';
 import { User } from '../interfaces/user';
 import { UserParams } from '../interfaces/user-params';
@@ -43,11 +42,7 @@ export class UserService {
   }
 
   // Public API
-  getUsers(userParams?: UserParams): Observable<PaginatedResult<User[]>> {
-    if (userParams) {
-      this.paramsService.setParams(userParams);
-    }
-
+  getUsers(): Observable<PaginatedResult<User[]>> {
     const currentParams = this.paramsService.getParams();
     if (!currentParams) return of(this.emptyPaginatedResult);
 
@@ -66,11 +61,9 @@ export class UserService {
   }
 
   updateUser(userId: number, updates: UserUpdate): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/user/${userId}`, updates).pipe(
-      map(() => {
-        this.handleUserUpdate(userId, updates);
-      })
-    );
+    return this.http
+      .put<void>(`${this.baseUrl}/user/${userId}`, updates)
+      .pipe(map(() => this.handleUserUpdate(userId, updates)));
   }
 
   setMainPhoto(photoId: number): Observable<void> {
@@ -115,28 +108,34 @@ export class UserService {
       })
       .pipe(
         map((response) => {
-          setPaginatedResponse(response, this.paginatedResult);
-          const result = this.paginatedResult();
-
-          if (result) {
-            this.cacheService.set(
-              this.cacheService.getCacheKey(params),
-              result
-            );
-            return result;
-          }
-
-          return this.emptyPaginatedResult;
+          const paginationHeader = response.headers.get('Pagination');
+          return {
+            result: response.body || [],
+            pagination: paginationHeader
+              ? JSON.parse(paginationHeader)
+              : this.emptyPaginatedResult.pagination,
+          };
         })
       );
   }
 
   private buildHttpParams(params: UserParams): HttpParams {
-    return new HttpParams()
+    let httpParams = new HttpParams()
       .append('minAge', params.minAge.toString())
       .append('maxAge', params.maxAge.toString())
       .append('gender', params.gender)
       .append('orderBy', params.orderBy);
+
+    if (params.pageNumber)
+      httpParams = httpParams.append(
+        'pageNumber',
+        params.pageNumber.toString()
+      );
+
+    if (params.pageSize)
+      httpParams = httpParams.append('pageSize', params.pageSize.toString());
+
+    return httpParams;
   }
 
   private handleUserUpdate(userId: number, updates: UserUpdate): void {
