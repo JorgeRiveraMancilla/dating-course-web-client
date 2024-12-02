@@ -5,6 +5,8 @@ import { RegisterPageComponent } from './pages/register-page/register-page.compo
 import { authGuard } from './guards/auth.guard';
 import { UserPageComponent } from './pages/user-page/user-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+import { UserDetailPageComponent } from './pages/user-page/user-detail-page/user-detail-page.component';
+import { userDetailPageResolverResolver } from './resolvers/user-detail-page-resolver.resolver';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -13,7 +15,16 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
-    children: [{ path: 'users', component: UserPageComponent }],
+    children: [
+      { path: 'users', component: UserPageComponent },
+      {
+        path: 'users/:id',
+        component: UserDetailPageComponent,
+        resolve: {
+          user: userDetailPageResolverResolver,
+        },
+      },
+    ],
   },
   { path: 'not-found', component: NotFoundPageComponent },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full' },
