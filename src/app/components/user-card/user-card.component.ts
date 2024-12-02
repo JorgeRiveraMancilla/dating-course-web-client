@@ -22,14 +22,14 @@ export class UserCardComponent {
   }
 
   protected onLike(): void {
-    // Implementar lógica de like
+    // TODO
   }
 
   protected onChat(): void {
-    // Implementar lógica de chat
+    // TODO
   }
 
   protected onLikeProfile(): void {
-    // Implementar lógica de like de perfil
+    // TODO
   }
 }
