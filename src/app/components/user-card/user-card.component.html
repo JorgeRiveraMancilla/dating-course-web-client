@@ -108,14 +108,10 @@
         </span>
       </div>
 
-      @if (user.isLiked) {
       <i
-        class="pi pi-heart-fill"
+        [class]="user.isLiked ? 'pi pi-heart-fill' : 'pi pi-heart'"
         [style]="{ color: 'var(--primary-color)' }"
       ></i>
-      } @else {
-      <i class="pi pi-heart" [style]="{ color: 'var(--primary-color)' }"></i>
-      }
     </div>
 
     <!-- Location -->
