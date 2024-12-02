@@ -119,16 +119,13 @@ export class RegisterPageComponent {
           });
           this.router.navigate(['/login']);
         },
-        error: (error: HttpErrorResponse) => {
-          console.log(error);
-
+        error: (error: HttpErrorResponse) =>
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error?.error || 'Error al registrarse',
             life: this.debounceMilliseconds,
-          });
-        },
+          }),
       });
   }
 

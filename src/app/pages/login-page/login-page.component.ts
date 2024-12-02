@@ -82,14 +82,13 @@ export class LoginPageComponent {
           });
           this.router.navigate(['/']);
         },
-        error: (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) =>
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: error.error?.error || 'Error al iniciar sesión',
             life: this.debounceMilliseconds,
-          });
-        },
+          }),
       });
   }
 
