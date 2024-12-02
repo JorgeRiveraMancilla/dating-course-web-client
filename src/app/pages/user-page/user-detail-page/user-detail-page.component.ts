@@ -70,6 +70,10 @@ export class UserDetailPageComponent {
         title: 'Qué busca',
         content: this.user.lookingFor || 'Sin descripción',
       },
+      {
+        title: 'Intereses',
+        content: this.user.interests || 'Sin descripción',
+      },
     ];
   }
 
@@ -101,10 +105,9 @@ export class UserDetailPageComponent {
   private getTabIndex(tabName: string): number {
     return (
       {
-        Perfil: 0,
-        Intereses: 1,
-        Fotos: 2,
-        Mensajes: 3,
+        profile: 0,
+        photos: 1,
+        messages: 2,
       }[tabName] ?? -1
     );
   }
