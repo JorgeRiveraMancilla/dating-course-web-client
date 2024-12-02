@@ -61,7 +61,29 @@
 
       <p-tabPanel header="Fotos">
         <div class="flex align-items-center justify-content-center">
-          <span class="text-500">Fotos próximamente...</span>
+          <p-galleria
+            [value]="userImages"
+            [showThumbnails]="true"
+            [responsiveOptions]="galleriaResponsiveOptions"
+            [containerStyle]="{ 'max-width': '640px' }"
+            [numVisible]="5"
+            [circular]="true"
+          >
+            <ng-template pTemplate="item" let-photo>
+              <img
+                [src]="photo.url"
+                [alt]="'Photo ' + photo.id"
+                style="width: 100%; height: 400px; object-fit: cover"
+              />
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-photo>
+              <img
+                [src]="photo.url"
+                [alt]="'Thumbnail ' + photo.id"
+                style="width: 100px; height: 67px; object-fit: cover"
+              />
+            </ng-template>
+          </p-galleria>
         </div>
       </p-tabPanel>
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -25,7 +25,7 @@ import { LikeService } from '../../../services/like.service';
   ],
   templateUrl: './user-detail-page.component.html',
 })
-export class UserDetailPageComponent {
+export class UserDetailPageComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly likeService = inject(LikeService);
@@ -34,6 +34,16 @@ export class UserDetailPageComponent {
   protected user: User = {} as User;
   protected readonly defaultImageUrl = environment.defaultUserImageUrl;
   protected activeTabIndex = 0;
+
+  protected readonly galleriaResponsiveOptions = [
+    { breakpoint: '1024px', numVisible: 5 },
+    { breakpoint: '768px', numVisible: 3 },
+    { breakpoint: '560px', numVisible: 1 },
+  ];
+
+  ngOnInit(): void {
+    this.initializeComponent();
+  }
 
   protected get userDetails() {
     return [
@@ -80,18 +90,8 @@ export class UserDetailPageComponent {
     ];
   }
 
-  protected readonly galleriaResponsiveOptions = [
-    { breakpoint: '1024px', numVisible: 5 },
-    { breakpoint: '768px', numVisible: 3 },
-    { breakpoint: '560px', numVisible: 1 },
-  ];
-
-  constructor() {
-    this.initializeComponent();
-  }
-
   protected get userImages(): Photo[] {
-    return this.user?.photos || [];
+    return this.user?.photos?.filter((photo) => photo.isApproved) || [];
   }
 
   protected onLikeClick(): void {
@@ -104,6 +104,20 @@ export class UserDetailPageComponent {
 
   protected onMessageClick(): void {
     this.selectTab('Mensajes');
+  }
+
+  private initializeComponent(): void {
+    this.route.data.subscribe({
+      next: (data) => {
+        if (data['user']) this.user = data['user'];
+      },
+    });
+
+    this.route.queryParams.subscribe({
+      next: (params) => {
+        if (params['tab']) this.selectTab(params['tab']);
+      },
+    });
   }
 
   private selectTab(tabName: string): void {
@@ -121,19 +135,5 @@ export class UserDetailPageComponent {
         messages: 2,
       }[tabName] ?? -1
     );
-  }
-
-  private initializeComponent(): void {
-    this.route.data.subscribe({
-      next: (data) => {
-        if (data['user']) this.user = data['user'];
-      },
-    });
-
-    this.route.queryParams.subscribe({
-      next: (params) => {
-        if (params['tab']) this.selectTab(params['tab']);
-      },
-    });
   }
 }
