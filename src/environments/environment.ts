@@ -3,4 +3,5 @@ export const environment = {
   apiUrl: 'api',
   authStorageKey: 'auth',
   debounceMilliseconds: 3000,
+  defaultUserImageUrl: '/assets/user.png',
 };

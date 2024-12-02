@@ -9,6 +9,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { Photo } from '../../../interfaces/photo';
 import { User } from '../../../interfaces/user';
 import { AuthService } from '../../../services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-user-detail-page',
@@ -29,7 +30,7 @@ export class UserDetailPageComponent {
 
   protected readonly auth = this.authService.getCurrentAuth();
   protected user: User = {} as User;
-  protected readonly defaultImageUrl = '/assets/user.png';
+  protected readonly defaultImageUrl = environment.defaultUserImageUrl;
   protected activeTabIndex = 0;
 
   protected get userDetails() {
