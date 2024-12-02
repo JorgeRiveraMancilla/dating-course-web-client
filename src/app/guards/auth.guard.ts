@@ -1,28 +1,24 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn } from '@angular/router';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { AuthService } from '../services/auth.service';
-import { ToastStateService } from '../services/toast-state.service';
 
-export const authGuard: CanActivateFn = (_route, state) => {
+export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
+  const messageService = inject(MessageService);
   const authService = inject(AuthService);
-  const toastStateService = inject(ToastStateService);
 
-  if (authService.isAuthenticated()) {
-    toastStateService.resetToastState();
-    return true;
+  if (!authService.isAuthInitialized()) return false;
+  else if (!authService.isAuthenticated()) {
+    messageService.add({
+      severity: 'error',
+      summary: 'Acceso denegado',
+      detail: 'Debes iniciar sesión para acceder a esta página',
+    });
+    router.navigate(['/login']);
+    return false;
   }
 
-  toastStateService.showToastOnce(
-    'warn',
-    'Acceso denegado',
-    'Debes iniciar sesión para acceder a esta página',
-    3000
-  );
-
-  router.navigate(['/login'], {
-    queryParams: { returnUrl: state.url },
-  });
-
-  return false;
+  return true;
 };
