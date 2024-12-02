@@ -10,6 +10,7 @@ import { Photo } from '../../../interfaces/photo';
 import { User } from '../../../interfaces/user';
 import { AuthService } from '../../../services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { LikeService } from '../../../services/like.service';
 
 @Component({
   selector: 'app-user-detail-page',
@@ -27,6 +28,7 @@ import { environment } from '../../../../environments/environment';
 export class UserDetailPageComponent {
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly likeService = inject(LikeService);
 
   protected readonly auth = this.authService.getCurrentAuth();
   protected user: User = {} as User;
@@ -90,6 +92,14 @@ export class UserDetailPageComponent {
 
   protected get userImages(): Photo[] {
     return this.user?.photos || [];
+  }
+
+  protected onLikeClick(): void {
+    this.likeService.toggleLike(this.user.id).subscribe({
+      next: () => {
+        this.user.isLiked = !this.user.isLiked;
+      },
+    });
   }
 
   protected onMessageClick(): void {

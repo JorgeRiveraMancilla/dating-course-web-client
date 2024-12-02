@@ -28,8 +28,11 @@
           <p-button
             label="Me gusta"
             icon="pi pi-heart"
-            styleClass="p-button-outlined flex-1"
+            [outlined]="!user.isLiked"
+            styleClass="flex-1"
+            (onClick)="onLikeClick()"
           ></p-button>
+
           <p-button
             label="Mensaje"
             icon="pi pi-send"
@@ -55,14 +58,6 @@
           }
         </div>
       </p-tabPanel>
-
-      <!-- <p-tabPanel header="Intereses">
-        <h3 class="mt-0 mb-3">Intereses</h3>
-        <p-divider></p-divider>
-        <p class="line-height-3">
-          {{ user.interests || 'Sin intereses registrados' }}
-        </p>
-      </p-tabPanel> -->
 
       <p-tabPanel header="Fotos">
         <div class="flex align-items-center justify-content-center">
