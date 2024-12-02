@@ -1,23 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
-  FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
-import { FormBuilder } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
+import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { LoginDto } from '../../interfaces/login-dto';
+import { AuthService } from '../../services/auth.service';
+import { FormValidatorService } from '../../services/form-validator.service';
 
 @Component({
   selector: 'app-login',
@@ -33,72 +34,79 @@ import { LoginDto } from '../../interfaces/login-dto';
     RouterModule,
   ],
   templateUrl: './login-page.component.html',
-  styles: ``,
 })
-export class LoginPageComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
+export class LoginPageComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly validatorService = inject(FormValidatorService);
 
-  loading = signal(false);
+  private readonly debounceMilliseconds = environment.debounceMilliseconds;
 
-  loginForm: FormGroup = new FormGroup({});
-
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  initializeForm(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          this.alphanumericValidator(),
-        ],
+  protected readonly loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(20),
+        this.validatorService.alphanumeric(),
       ],
-    });
-  }
+    ],
+  });
+  protected loading = false;
 
-  alphanumericValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const regex = /^[a-zA-Z0-9]*$/;
-      return regex.test(control.value) ? null : { alphanumeric: true };
-    };
-  }
-
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    this.loading.set(true);
-    const formValues = this.loginForm.value;
-
+    const formValue = this.loginForm.value as LoginDto;
     const loginData: LoginDto = {
-      email: formValues.email,
-      password: formValues.password,
+      email: formValue.email.trim().toLowerCase(),
+      password: formValue.password,
     };
 
-    this.authService.login(loginData).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Inicio de sesión exitoso',
-        });
-        this.router.navigate(['/']);
-      },
-      error: (error) => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.error || 'Error al iniciar sesión',
-        });
-      },
-    });
+    this.loading = true;
+
+    this.authService
+      .login(loginData)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Inicio de sesión exitoso',
+            life: this.debounceMilliseconds,
+          });
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error?.error || 'Error al iniciar sesión',
+            life: this.debounceMilliseconds,
+          });
+        },
+      });
+  }
+
+  protected getFieldError(fieldName: keyof LoginDto): string {
+    const control = this.loginForm.get(fieldName);
+
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = {
+      required: 'Este campo es requerido',
+      email: 'Correo electrónico inválido',
+      minlength: `Mínimo ${control.errors['minlength']?.requiredLength} caracteres`,
+      maxlength: `Máximo ${control.errors['maxlength']?.requiredLength} caracteres`,
+      alphanumeric: 'Solo se permiten letras y números',
+    };
+
+    const firstError = Object.keys(control.errors)[0];
+    return errors[firstError as keyof typeof errors] || 'Campo inválido';
   }
 }

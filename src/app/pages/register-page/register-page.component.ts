@@ -1,25 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-  ValidatorFn,
   FormGroup,
+  Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../../services/auth.service';
-import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { RegisterDto } from '../../interfaces/register-dto';
+import { RegisterForm } from '../../interfaces/register-form';
+import { AuthService } from '../../services/auth.service';
+import { FormValidatorService } from '../../services/form-validator.service';
 
 @Component({
   selector: 'app-register',
@@ -36,117 +38,114 @@ import { RegisterDto } from '../../interfaces/register-dto';
     ToastModule,
     RouterModule,
   ],
-
   templateUrl: './register-page.component.html',
-  styles: ``,
 })
-export class RegisterPageComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
+export class RegisterPageComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly validatorService = inject(FormValidatorService);
 
-  loading = signal(false);
-  maxDate = new Date();
+  private readonly debounceMilliseconds = environment.debounceMilliseconds;
 
-  genderOptions = [
+  protected readonly genderOptions: {
+    label: string;
+    value: string;
+  }[] = [
     { label: 'Masculino', value: 'male' },
     { label: 'Femenino', value: 'female' },
   ];
+  protected readonly maxDate = new Date();
 
-  registerForm: FormGroup = new FormGroup({});
-
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  initializeForm(): void {
-    this.registerForm = this.fb.group({
-      userName: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      knownAs: ['', [Validators.required, Validators.minLength(3)]],
-      gender: ['', Validators.required],
-      birthDate: [null as Date | null, Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          this.alphanumericValidator(),
-        ],
+  protected readonly registerForm: FormGroup = this.fb.group({
+    userName: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    knownAs: ['', [Validators.required, Validators.minLength(3)]],
+    gender: ['', Validators.required],
+    birthDate: [null as Date | null, Validators.required],
+    city: ['', Validators.required],
+    country: ['', Validators.required],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(20),
+        this.validatorService.alphanumeric(),
       ],
-      confirmPassword: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          this.alphanumericValidator(),
-          this.matchValidator('password'),
-        ],
+    ],
+    confirmPassword: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(20),
+        this.validatorService.alphanumeric(),
+        this.validatorService.passwordMatch('password'),
       ],
-    });
+    ],
+  });
+  protected loading = false;
 
-    this.registerForm.controls['password'].valueChanges.subscribe({
-      next: () =>
-        this.registerForm.controls['confirmPassword'].updateValueAndValidity(),
-    });
-  }
-
-  matchValidator(matchTo: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      return control.value === control.parent?.get(matchTo)?.value
-        ? null
-        : { match: true };
-    };
-  }
-
-  alphanumericValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const regex = /^[a-zA-Z0-9]*$/;
-      return regex.test(control.value) ? null : { alphanumeric: true };
-    };
-  }
-
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.registerForm.invalid) return;
 
-    this.loading.set(true);
-
-    const formValues = this.registerForm.value;
-    const formattedDate = formValues.birthDate.toISOString().split('T')[0];
-
+    const formValue = this.registerForm.value as RegisterForm;
     const registerData: RegisterDto = {
-      userName: formValues.userName,
-      email: formValues.email,
-      knownAs: formValues.knownAs,
-      gender: formValues.gender,
-      birthDate: formattedDate,
-      city: formValues.city,
-      country: formValues.country,
-      password: formValues.password,
-      confirmPassword: formValues.confirmPassword,
+      userName: formValue.userName.trim(),
+      email: formValue.email.trim().toLowerCase(),
+      knownAs: formValue.knownAs.trim(),
+      gender: formValue.gender,
+      birthDate: formValue.birthDate!.toISOString().split('T')[0],
+      city: formValue.city.trim(),
+      country: formValue.country.trim(),
+      password: formValue.password,
+      confirmPassword: formValue.confirmPassword,
     };
 
-    this.authService.register(registerData).subscribe({
-      next: () => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Registro exitoso. Por favor, inicia sesión.',
-        });
-        this.router.navigate(['/login']);
-      },
-      error: (error) => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.error || 'Error al registrarse',
-        });
-      },
-    });
+    this.loading = true;
+
+    this.authService
+      .register(registerData)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Registro exitoso',
+            life: this.debounceMilliseconds,
+          });
+          this.router.navigate(['/login']);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error?.error || 'Error al registrarse',
+            life: this.debounceMilliseconds,
+          });
+        },
+      });
+  }
+
+  protected getFieldError(fieldName: keyof RegisterForm): string {
+    const control = this.registerForm.get(fieldName);
+
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = {
+      required: 'Este campo es requerido',
+      email: 'Correo electrónico inválido',
+      minlength: `Mínimo ${control.errors['minlength']?.requiredLength} caracteres`,
+      maxlength: `Máximo ${control.errors['maxlength']?.requiredLength} caracteres`,
+      alphanumeric: 'Solo se permiten letras y números',
+    };
+
+    const firstError = Object.keys(control.errors)[0];
+    return errors[firstError as keyof typeof errors] || 'Campo inválido';
   }
 }
