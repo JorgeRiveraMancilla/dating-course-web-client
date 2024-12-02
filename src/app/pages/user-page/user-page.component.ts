@@ -1,27 +1,26 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
+  ReactiveFormsModule,
   FormBuilder,
   FormGroup,
-  ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { User } from '../../interfaces/user';
-import { RouterModule } from '@angular/router';
-import { UserParams } from '../../interfaces/user-params';
-import { Pagination } from '../../interfaces/pagination';
-import { PaginatedResult } from '../../interfaces/paginated-result';
 import { TooltipModule } from 'primeng/tooltip';
-import { CardModule } from 'primeng/card';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { PaginatorState, PaginatorModule } from 'primeng/paginator';
 import { UserCardComponent } from '../../components/user-card/user-card.component';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { Pagination } from '../../interfaces/pagination';
+import { User } from '../../interfaces/user';
+import { UserParams } from '../../interfaces/user-params';
+import { FormValidatorService } from '../../services/form-validator.service';
+import { UserService } from '../../services/user.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-page',
@@ -29,48 +28,67 @@ import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
     DropdownModule,
     InputNumberModule,
     ButtonModule,
     PaginatorModule,
-    RouterModule,
     TooltipModule,
     CardModule,
     UserCardComponent,
   ],
   templateUrl: './user-page.component.html',
-  styles: ``,
 })
-export class UserPageComponent implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
-  private userService = inject(UserService);
-  private destroy$ = new Subject<void>();
+export class UserPageComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly userService = inject(UserService);
+  private readonly validatorService = inject(FormValidatorService);
 
-  users: User[] = [];
-  userParams: UserParams = this.userService.userParams;
-  userPagination: Pagination = this.getPagination();
+  protected users: User[] = [];
+  protected userParams: UserParams =
+    this.userService.getUserParams() || ({} as UserParams);
+  protected pagination: Pagination = this.getDefaultPagination();
 
-  filterForm: FormGroup = new FormGroup({});
-  genderOptions = [
+  protected readonly filterForm: FormGroup = this.initializeForm();
+  protected readonly genderOptions = [
     { label: 'Masculino', value: 'male' },
     { label: 'Femenino', value: 'female' },
   ];
-  readonly debounceTime = 1000;
+  protected readonly debounceMilliseconds = environment.debounceMilliseconds;
 
-  ngOnInit(): void {
-    this.initializeForm();
+  constructor() {
     this.setupFormSubscription();
     this.loadUsers();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  // Public Methods
+  protected onSubmit(): void {
+    if (this.filterForm.invalid) return;
+    this.updateUserParams(this.filterForm.value);
+    this.loadUsers();
   }
 
-  getPagination(): Pagination {
+  protected resetFilters(): void {
+    const resetParams = this.userService.resetUserParams();
+    if (resetParams) {
+      this.userParams = resetParams;
+      this.filterForm.reset(resetParams);
+      this.loadUsers();
+    }
+  }
+
+  protected onPageChange(event: PaginatorState): void {
+    if (event.first === undefined || event.rows === undefined) return;
+
+    const pageNumber = Math.floor(event.first / event.rows) + 1;
+    this.updateUserParams({ pageNumber, pageSize: event.rows });
+    this.loadUsers();
+  }
+
+  // Private Methods
+  private getDefaultPagination(): Pagination {
     return (
-      this.userService.paginatedResult()?.pagination || {
+      this.userService.getPaginatedResult()?.pagination || {
         currentPage: 1,
         itemsPerPage: 10,
         totalItems: 0,
@@ -79,110 +97,56 @@ export class UserPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  initializeForm(): void {
-    this.filterForm = this.fb.group({
+  private initializeForm(): FormGroup {
+    const form = this.fb.group({
       minAge: [
         this.userParams.minAge,
         [Validators.required, Validators.min(18)],
       ],
       maxAge: [
         this.userParams.maxAge,
-        [Validators.required, this.ageRangeValidator('minAge')],
+        [
+          Validators.required,
+          this.validatorService.ageRangeValidator('minAge'),
+        ],
       ],
       gender: [this.userParams.gender, [Validators.required]],
     });
 
-    this.filterForm.controls['minAge'].valueChanges.subscribe({
-      next: () => {
-        this.filterForm.controls['maxAge'].updateValueAndValidity();
-      },
+    // Actualizar validación de maxAge cuando cambie minAge
+    form.get('minAge')?.valueChanges.subscribe(() => {
+      form.get('maxAge')?.updateValueAndValidity();
     });
+
+    return form;
   }
 
-  ageRangeValidator(matchTo: string): ValidatorFn {
-    return (control: AbstractControl) => {
-      return control.parent?.get(matchTo)?.value <= control.value
-        ? null
-        : { ageRange: true };
-    };
-  }
-
-  setupFormSubscription(): void {
+  private setupFormSubscription(): void {
     this.filterForm.valueChanges
-      .pipe(
-        debounceTime(this.debounceTime),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (formValue) => {
-          if (this.filterForm.valid) {
-            this.userParams = {
-              ...this.userParams,
-              ...formValue,
-              pageNumber: 1,
-            };
-
-            this.userService.setUserParams(this.userParams);
-            this.loadUsers();
-          }
-        },
-      });
-  }
-
-  loadUsers(): void {
-    this.userService.setUserParams(this.userParams);
-
-    this.userService
-      .getUsers()
-      .subscribe((paginatedResult: PaginatedResult<User[]>) => {
-        if (paginatedResult) {
-          this.users = paginatedResult.result || [];
-
-          this.userPagination.currentPage =
-            paginatedResult.pagination?.currentPage || 1;
-          this.userPagination.itemsPerPage =
-            paginatedResult.pagination?.itemsPerPage || 10;
-          this.userPagination.totalItems =
-            paginatedResult.pagination?.totalItems || 0;
-
-          this.userPagination.totalPages =
-            paginatedResult.pagination?.totalPages || 0;
+      .pipe(debounceTime(this.debounceMilliseconds), distinctUntilChanged())
+      .subscribe((formValue) => {
+        if (this.filterForm.valid) {
+          this.updateUserParams({ ...formValue, pageNumber: 1 });
+          this.loadUsers();
         }
       });
   }
 
-  resetFilters(): void {
-    this.userService.resetUserParams();
-    this.userParams = this.userService.userParams;
-    this.filterForm.reset(this.userParams);
-    this.loadUsers();
-  }
-
-  onSubmit(): void {
-    if (this.filterForm.invalid) return;
-
-    this.userParams = {
-      ...this.userParams,
-      ...this.filterForm.value,
-    };
-
+  private updateUserParams(updates: Partial<UserParams>): void {
+    this.userParams = { ...this.userParams, ...updates };
     this.userService.setUserParams(this.userParams);
-    this.loadUsers();
   }
 
-  onPageChange(event: PaginatorState) {
-    if (event.first !== undefined && event.rows !== undefined) {
-      const pageNumber = Math.floor(event.first / event.rows) + 1;
-
-      this.userParams = {
-        ...this.userParams,
-        pageNumber: pageNumber,
-        pageSize: event.rows,
-      };
-
-      this.userService.setUserParams(this.userParams);
-      this.loadUsers();
-    }
+  private loadUsers(): void {
+    this.userService.getUsers(this.userParams).subscribe({
+      next: (paginatedResult) => {
+        if (paginatedResult) {
+          this.users = paginatedResult.result || [];
+          this.pagination =
+            paginatedResult.pagination || this.getDefaultPagination();
+        }
+      },
+      error: (error) => console.error('Error loading users:', error),
+    });
   }
 }

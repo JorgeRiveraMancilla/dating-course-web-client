@@ -1,10 +1,8 @@
-<!-- Gallery Container -->
 <div class="flex flex-column gap-3">
   <!-- Filters Form -->
   <form [formGroup]="filterForm" class="flex justify-content-center gap-3">
     <div class="flex flex-column justify-content-center">
-      <label htmlFor="minAge" class="font-medium"> Desde: </label>
-
+      <label for="minAge" class="font-medium">Desde:</label>
       <div class="flex flex-row align-items-center">
         <p-inputNumber
           inputId="minAge"
@@ -19,7 +17,6 @@
           incrementButtonIcon="pi pi-plus"
           decrementButtonIcon="pi pi-minus"
         />
-
         @if (filterForm.get('minAge')?.invalid &&
         filterForm.get('minAge')?.touched) {
         <i
@@ -33,8 +30,7 @@
     </div>
 
     <div class="flex flex-column justify-content-center">
-      <label htmlFor="maxAge" class="font-medium"> Hasta: </label>
-
+      <label for="maxAge" class="font-medium">Hasta:</label>
       <div class="flex flex-row align-items-center">
         <p-inputNumber
           inputId="maxAge"
@@ -49,7 +45,6 @@
           incrementButtonIcon="pi pi-plus"
           decrementButtonIcon="pi pi-minus"
         />
-
         @if (filterForm.get('maxAge')?.invalid &&
         filterForm.get('maxAge')?.touched) {
         <i
@@ -63,8 +58,7 @@
     </div>
 
     <div class="flex flex-column justify-content-center">
-      <label htmlFor="gender" class="font-medium">Género</label>
-
+      <label for="gender" class="font-medium">Género</label>
       <p-dropdown
         id="gender"
         class="w-full"
@@ -87,25 +81,20 @@
         severity="secondary"
         icon="pi pi-sync"
         (onClick)="resetFilters()"
-      >
-      </p-button>
+      ></p-button>
     </div>
   </form>
 
   <!-- User Cards Grid -->
   <div class="flex flex-wrap justify-content-center gap-3">
-    @for (user of users; track $index) {
+    @for (user of users; track user.id) {
     <app-user-card [user]="user"></app-user-card>
     } @empty {
     <div
-      class="w-full flex justify-content-center align-items-center"
-      [style]="{ minHeight: '300px' }"
+      class="w-full flex justify-content-center align-items-center min-h-[300px]"
     >
       <div class="flex flex-column align-items-center gap-3">
-        <i
-          class="pi pi-users"
-          [style]="{ fontSize: '3rem', color: '#666' }"
-        ></i>
+        <i class="pi pi-users text-[3rem] text-600"></i>
         <span class="text-500">
           No se encontraron usuarios con los filtros seleccionados
         </span>
@@ -115,11 +104,11 @@
   </div>
 
   <!-- Pagination -->
-  @if (0 < userPagination.totalItems) {
-  <div class="flex justify-content-center mt-3">
+  @if (0 < pagination.totalItems) {
+  <div class="flex justify-content-center">
     <p-paginator
-      [rows]="userPagination.itemsPerPage"
-      [totalRecords]="userPagination.totalItems"
+      [rows]="pagination.itemsPerPage"
+      [totalRecords]="pagination.totalItems"
       [rowsPerPageOptions]="[10, 20, 50, 100]"
       (onPageChange)="onPageChange($event)"
       [showCurrentPageReport]="true"
