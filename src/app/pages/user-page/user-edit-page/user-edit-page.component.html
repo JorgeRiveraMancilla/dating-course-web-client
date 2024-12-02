@@ -1,0 +1,131 @@
+<div class="grid" *ngIf="user">
+  <div class="col-12 md:col-4">
+    <h1 class="text-2xl mb-3">Tu perfil</h1>
+  </div>
+
+  <div class="col-12 md:col-8">
+    <p-message
+      *ngIf="editForm?.dirty"
+      severity="info"
+      text="Has realizado cambios que no se han guardado."
+      styleClass="w-full"
+    >
+    </p-message>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <p-card>
+      <ng-template pTemplate="header">
+        <img
+          [src]="user.mainPhoto?.url || 'assets/user.png'"
+          [alt]="user.knownAs"
+          class="w-full h-25rem object-cover"
+        />
+      </ng-template>
+
+      <div class="flex flex-column gap-3">
+        <div class="field">
+          <span class="font-bold block mb-2">Ubicación:</span>
+          <span>{{ user.city }}, {{ user.country }}</span>
+        </div>
+        <div class="field">
+          <span class="font-bold block mb-2">Edad:</span>
+          <span>{{ user.age }} años</span>
+        </div>
+        <div class="field">
+          <span class="font-bold block mb-2">Última conexión:</span>
+          <span>{{ user.lastActive | date : 'short' }}</span>
+        </div>
+        <div class="field">
+          <span class="font-bold block mb-2">Miembro desde:</span>
+          <span>{{ user.created | date : 'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          [disabled]="!editForm?.dirty"
+          type="submit"
+          form="editForm"
+          label="Guardar cambios"
+          styleClass="w-full"
+        >
+        </p-button>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="col-12 md:col-8">
+    <p-tabView>
+      <p-tabPanel [header]="'Acerca de ' + user.knownAs">
+        <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()">
+          <div class="flex flex-column gap-4">
+            <div class="field">
+              <h4>Descripción</h4>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="user.introduction"
+                name="introduction"
+                rows="6"
+                class="w-full"
+              >
+              </textarea>
+            </div>
+
+            <div class="field">
+              <h4>Qué busca</h4>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="user.lookingFor"
+                name="lookingFor"
+                rows="6"
+                class="w-full"
+              >
+              </textarea>
+            </div>
+
+            <div class="field">
+              <h4>Intereses</h4>
+              <textarea
+                pInputTextarea
+                [(ngModel)]="user.interests"
+                name="interests"
+                rows="6"
+                class="w-full"
+              >
+              </textarea>
+            </div>
+
+            <div class="field">
+              <h4>Detalles de ubicación</h4>
+              <div class="flex align-items-center gap-3">
+                <div class="field flex-1">
+                  <label for="city" class="block mb-2">Ciudad</label>
+                  <input
+                    pInputText
+                    [(ngModel)]="user.city"
+                    id="city"
+                    name="city"
+                    class="w-full"
+                  />
+                </div>
+                <div class="field flex-1">
+                  <label for="country" class="block mb-2">País</label>
+                  <input
+                    pInputText
+                    [(ngModel)]="user.country"
+                    id="country"
+                    name="country"
+                    class="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </p-tabPanel>
+
+      <p-tabPanel header="Fotos"> Próximamente... </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
