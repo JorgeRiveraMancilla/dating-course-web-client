@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 import { GalleriaModule } from 'primeng/galleria';
 import { TabViewModule } from 'primeng/tabview';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { AuthService } from '../../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { User } from '../../../interfaces/user';
 import { Photo } from '../../../interfaces/photo';
+import { User } from '../../../interfaces/user';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-user-detail-page',
@@ -22,49 +22,104 @@ import { Photo } from '../../../interfaces/photo';
     DividerModule,
   ],
   templateUrl: './user-detail-page.component.html',
-  styles: ``,
 })
-export class UserDetailPageComponent implements OnInit, OnDestroy {
-  private authService = inject(AuthService);
-  private activatedRoute = inject(ActivatedRoute);
+export class UserDetailPageComponent {
+  private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
 
-  auth = this.authService.getCurrentAuth();
-  user: User = {} as User;
-  userImages: Photo[] = [];
-  readonly defaultImageUrl = '/assets/user.png';
+  protected readonly auth = this.authService.getCurrentAuth();
+  protected user: User = {} as User;
+  protected readonly defaultImageUrl = '/assets/user.png';
+  protected activeTabIndex = 0;
 
-  activeTabIndex = 0;
+  protected get userDetails() {
+    return [
+      {
+        label: 'Ubicación',
+        value:
+          this.user.city && this.user.country
+            ? `${this.user.city}, ${this.user.country}`
+            : 'No especificada',
+      },
+      {
+        label: 'Edad',
+        value: this.user.age ? `${this.user.age} años` : 'No especificada',
+      },
+      {
+        label: 'Última conexión',
+        value: this.user.lastActive
+          ? new Date(this.user.lastActive).toLocaleDateString()
+          : 'Sin información',
+      },
+      {
+        label: 'Usuario desde',
+        value: this.user.created
+          ? new Date(this.user.created).toLocaleDateString()
+          : 'Sin información',
+      },
+    ];
+  }
 
-  readonly tabMap: { [key: string]: number } = {
-    About: 0,
-    Interests: 1,
-    Photos: 2,
-    Messages: 3,
-  };
+  protected get userSections() {
+    return [
+      {
+        title: 'Descripción',
+        content: this.user.introduction || 'Sin descripción',
+      },
+      {
+        title: 'Qué busca',
+        content: this.user.lookingFor || 'Sin descripción',
+      },
+    ];
+  }
 
-  ngOnInit(): void {
-    this.activatedRoute.data.subscribe({
+  protected readonly galleriaResponsiveOptions = [
+    { breakpoint: '1024px', numVisible: 5 },
+    { breakpoint: '768px', numVisible: 3 },
+    { breakpoint: '560px', numVisible: 1 },
+  ];
+
+  constructor() {
+    this.initializeComponent();
+  }
+
+  protected get userImages(): Photo[] {
+    return this.user?.photos || [];
+  }
+
+  protected onMessageClick(): void {
+    this.selectTab('Mensajes');
+  }
+
+  private selectTab(tabName: string): void {
+    const tabIndex = this.getTabIndex(tabName);
+    if (tabIndex !== -1) {
+      this.activeTabIndex = tabIndex;
+    }
+  }
+
+  private getTabIndex(tabName: string): number {
+    return (
+      {
+        Perfil: 0,
+        Intereses: 1,
+        Fotos: 2,
+        Mensajes: 3,
+      }[tabName] ?? -1
+    );
+  }
+
+  private initializeComponent(): void {
+    this.route.data.subscribe({
       next: (data) => {
-        console.log(data);
+        if (data['user']) this.user = data['user'];
       },
     });
 
-    this.activatedRoute.queryParams.subscribe({
+    this.route.queryParams.subscribe({
       next: (params) => {
-        console.log(params);
+        if (params['tab']) this.selectTab(params['tab']);
       },
     });
-  }
-
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  selectTab(tabName: string): void {
-    this.activeTabIndex = this.tabMap[tabName] ?? 0;
-  }
-
-  getImages() {
-    if (!this.user) return;
   }
 }

@@ -1,124 +1,80 @@
-<div class="grid">
-  <!-- User Info Card -->
-  <div class="col-12 md:col-4">
-    <p-card>
+<div class="flex gap-5 justify-content-center px-5">
+  <div [style]="{ width: '18rem' }">
+    <p-card styleClass="h-full">
       <ng-template pTemplate="header">
         <img
           [src]="user.mainPhoto?.url || defaultImageUrl"
           [alt]="user.knownAs"
-          class="w-full"
+          [style]="{ width: '100%', height: '100%', objectFit: 'cover' }"
         />
       </ng-template>
 
       <div class="flex flex-column gap-3">
         <div class="flex align-items-center gap-2">
-          <i
-            class="pi pi-circle-fill text-green-500"
-            style="font-size: 0.75rem"
-          ></i>
+          <i class="pi pi-circle-fill text-sm text-green-500"></i>
           <span class="text-green-500">Conectado ahora</span>
         </div>
 
-        <div>
-          <span class="font-bold block mb-2">Ubicación:</span>
-          <span>{{ user.city }}, {{ user.country }}</span>
+        @for (detail of userDetails; track $index) {
+        <div class="user-detail">
+          <span class="font-bold block mb-2">{{ detail.label }}:</span>
+          <span>{{ detail.value }}</span>
         </div>
-
-        <div>
-          <span class="font-bold block mb-2">Edad:</span>
-          <span>{{ user.age }} años</span>
-        </div>
-
-        <div>
-          <span class="font-bold block mb-2">Última conexión:</span>
-          <span>{{ user.lastActive }}</span>
-        </div>
-
-        <div>
-          <span class="font-bold block mb-2">Usuario desde:</span>
-          <span>{{ user.created | date : 'dd MMM yyyy' }}</span>
-        </div>
+        }
       </div>
 
       <ng-template pTemplate="footer">
-        <div class="flex gap-2">
+        <div class="flex gap-2 justify-content-center">
           <p-button
-            label="Like"
+            label="Me gusta"
             icon="pi pi-heart"
-            styleClass="p-button-outlined w-6"
+            styleClass="p-button-outlined flex-1"
           ></p-button>
-
           <p-button
-            label="Message"
+            label="Mensaje"
             icon="pi pi-send"
             severity="success"
-            styleClass="p-button-outlined w-6"
-            (onClick)="selectTab('Messages')"
+            styleClass="p-button-outlined flex-1"
+            (onClick)="onMessageClick()"
           ></p-button>
         </div>
       </ng-template>
     </p-card>
   </div>
 
-  <!-- User Details Tabs -->
-  <div class="col-12 md:col-8">
-    <p-tabView [(activeIndex)]="activeTabIndex" (onChange)="($event)">
-      <!-- About Tab -->
-      <p-tabPanel [header]="'About ' + user.knownAs">
+  <div [style]="{ width: '70rem' }">
+    <p-tabView [(activeIndex)]="activeTabIndex">
+      <p-tabPanel [header]="'Perfil de ' + user.knownAs">
         <div class="flex flex-column gap-4">
+          @for (section of userSections; track $index) {
           <div>
-            <h3>Descripción</h3>
+            <h3 class="mt-0 mb-3">{{ section.title }}</h3>
             <p-divider></p-divider>
-            <p>{{ user.introduction }}</p>
+            <p class="line-height-3">{{ section.content }}</p>
           </div>
-
-          <div>
-            <h3>Looking for</h3>
-            <p-divider></p-divider>
-            <p>{{ user.lookingFor }}</p>
-          </div>
+          }
         </div>
       </p-tabPanel>
 
-      <!-- Interests Tab -->
-      <p-tabPanel header="Interests">
-        <h3>Interests</h3>
+      <p-tabPanel header="Intereses">
+        <h3 class="mt-0 mb-3">Intereses</h3>
         <p-divider></p-divider>
-        <p>{{ user.interests }}</p>
+        <p class="line-height-3">
+          {{ user.interests || 'Sin intereses registrados' }}
+        </p>
       </p-tabPanel>
 
-      <!-- Photos Tab -->
-      <p-tabPanel header="Photos">
-        @if (activeTabIndex === 2) {
-        <p-galleria
-          [value]="userImages"
-          [responsiveOptions]="[
-            {
-              breakpoint: '1024px',
-              numVisible: 5
-            },
-            {
-              breakpoint: '768px',
-              numVisible: 3
-            },
-            {
-              breakpoint: '560px',
-              numVisible: 1
-            }
-          ]"
-          [containerStyle]="{ 'max-width': '800px', margin: 'auto' }"
-          [numVisible]="5"
-          [circular]="true"
-          [showItemNavigators]="true"
-          [showThumbnails]="true"
-          [showIndicators]="true"
-        >
-        </p-galleria>
-        }
+      <p-tabPanel header="Fotos">
+        <div class="flex align-items-center justify-content-center">
+          <span class="text-500">Fotos próximamente...</span>
+        </div>
       </p-tabPanel>
 
-      <!-- Messages Tab -->
-      <p-tabPanel header="Messages"> Falta... </p-tabPanel>
+      <p-tabPanel header="Mensajes">
+        <div class="flex align-items-center justify-content-center">
+          <span class="text-500">Mensajes próximamente...</span>
+        </div>
+      </p-tabPanel>
     </p-tabView>
   </div>
 </div>
