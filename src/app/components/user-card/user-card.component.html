@@ -107,14 +107,12 @@
           {{ user.knownAs }}, {{ user.age }} años
         </span>
       </div>
-      <a
-        class="shrink-0"
-        href="javascript:void(0)"
-        (click)="onLikeProfile()"
-        [style]="{ color: '#666', 'text-decoration': 'none' }"
-      >
-        <i class="pi pi-heart"></i>
-      </a>
+
+      @if (user.isLiked) {
+      <i class="pi pi-heart-fill" [style]="{ color: '#666' }"></i>
+      } @else {
+      <i class="pi pi-heart" [style]="{ color: '#666' }"></i>
+      }
     </div>
 
     <!-- Location -->
