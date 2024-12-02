@@ -1,60 +1,61 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Component, inject, computed } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
-import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, MenuModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ButtonModule,
+    MenuModule,
+    ProgressSpinnerModule,
+  ],
   templateUrl: './navbar.component.html',
-  styles: ``,
 })
 export class NavbarComponent {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
-  userMenuItems: MenuItem[] = [
-    {
-      label: 'Editar perfil',
-      icon: 'pi pi-user-edit',
-      command: () => this.navigateToProfile(),
-    },
-    {
-      separator: true,
-    },
-    {
-      label: 'Cerrar sesión',
-      icon: 'pi pi-sign-out',
-      command: () => this.logout(),
-    },
-  ];
+  readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
+  readonly isAuthInitialized = computed(() =>
+    this.authService.isAuthInitialized()
+  );
+  readonly currentUser = computed(
+    () => this.authService.getCurrentAuth()?.userName
+  );
 
-  get isAuthenticated(): boolean {
-    return this.authService.isAuthenticated();
+  protected readonly userMenu: {
+    items: MenuItem[];
+  } = {
+    items: [
+      {
+        label: 'Editar perfil',
+        icon: 'pi pi-user-edit',
+        command: () => this.navigateTo('/profile'),
+      },
+      { separator: true },
+      {
+        label: 'Cerrar sesión',
+        icon: 'pi pi-sign-out',
+        command: () => this.handleLogout(),
+      },
+    ],
+  };
+
+  protected navigateTo(route: string): void {
+    this.router.navigate([route]);
   }
 
-  get currentUser(): string | undefined {
-    return this.authService.getCurrentAuth()?.userName;
-  }
-
-  navigateToLogin(): void {
-    this.router.navigate(['/login']);
-  }
-
-  navigateToRegister(): void {
-    this.router.navigate(['/register']);
-  }
-
-  navigateToProfile(): void {
-    this.router.navigate(['/profile']);
-  }
-
-  logout(): void {
+  private handleLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
+    this.navigateTo('/');
   }
 }

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { ToastModule } from 'primeng/toast';
+import { FooterComponent } from './components/footer/footer.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +16,5 @@ import { ToastModule } from 'primeng/toast';
     ToastModule,
   ],
   templateUrl: './app.component.html',
-  styles: ``,
 })
 export class AppComponent {}
