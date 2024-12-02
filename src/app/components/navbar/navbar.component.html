@@ -35,7 +35,7 @@
     } @else {
     <p-button
       #btn
-      [label]="currentUser()"
+      [label]="currentUser()?.toUpperCase()"
       icon="pi pi-user"
       (click)="menu.toggle($event)"
     >
