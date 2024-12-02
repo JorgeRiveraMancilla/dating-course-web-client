@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { User } from '../../interfaces/user';
@@ -8,19 +9,27 @@ import { User } from '../../interfaces/user';
   standalone: true,
   imports: [CardModule, ButtonModule],
   templateUrl: './user-card.component.html',
-  styles: ``,
 })
 export class UserCardComponent {
   @Input() user!: User;
+  private readonly router = inject(Router);
 
-  readonly defaultImageUrl = '/assets/user.png';
-  hover = false;
+  protected readonly defaultImageUrl = '/assets/user.png';
+  protected hover = false;
 
-  onProfileView(): void {}
+  protected onProfileView(): void {
+    this.router.navigate(['/users', this.user.id]);
+  }
 
-  onLike(): void {}
+  protected onLike(): void {
+    // Implementar lógica de like
+  }
 
-  onChat(): void {}
+  protected onChat(): void {
+    // Implementar lógica de chat
+  }
 
-  onLikeProfile(): void {}
+  protected onLikeProfile(): void {
+    // Implementar lógica de like de perfil
+  }
 }
