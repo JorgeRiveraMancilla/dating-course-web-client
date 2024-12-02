@@ -16,4 +16,5 @@ export interface User {
   lastActive: Date;
   photos: Photo[];
   mainPhoto?: Photo;
+  isLiked: boolean;
 }
