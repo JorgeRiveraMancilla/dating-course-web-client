@@ -3,7 +3,7 @@ import { ResolveFn } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { User } from '../interfaces/user';
 
-export const userDetailPageResolverResolver: ResolveFn<User> = (route) => {
+export const userResolver: ResolveFn<User> = (route) => {
   const userService = inject(UserService);
 
   const userIdStr = route.paramMap.get('id');
