@@ -7,7 +7,7 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 import { jwtInterceptor } from './interceptors/jwt.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
@@ -23,5 +23,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimations(),
     MessageService,
+    ConfirmationService,
   ],
 };

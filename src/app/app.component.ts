@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     NavbarComponent,
     FooterComponent,
     ToastModule,
+    ConfirmDialogModule,
   ],
   templateUrl: './app.component.html',
 })
