@@ -140,6 +140,7 @@ export class RegisterPageComponent {
       minlength: `Mínimo ${control.errors['minlength']?.requiredLength} caracteres`,
       maxlength: `Máximo ${control.errors['maxlength']?.requiredLength} caracteres`,
       alphanumeric: 'Solo se permiten letras y números',
+      passwordMatch: 'Las contraseñas no coinciden',
     };
 
     const firstError = Object.keys(control.errors)[0];
