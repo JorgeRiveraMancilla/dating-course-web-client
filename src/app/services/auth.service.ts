@@ -8,6 +8,7 @@ import { RegisterDto } from '../interfaces/register-dto';
 import { StorageService } from './storage.service';
 import { TokenService } from './token.service';
 import { AuthState } from '../interfaces/auth-state';
+import { ChangePasswordForm } from '../interfaces/change-password-form';
 
 @Injectable({
   providedIn: 'root',
@@ -91,6 +92,13 @@ export class AuthService {
   logout(): void {
     this.storage.removeItem(environment.authStorageKey);
     this.clearAuthState();
+  }
+
+  changePassword(changePasswordData: ChangePasswordForm): Observable<void> {
+    return this.http.post<void>(
+      `${environment.apiUrl}/account/change-password`,
+      changePasswordData
+    );
   }
 
   private handleSuccessfulAuth(auth: Auth): void {
