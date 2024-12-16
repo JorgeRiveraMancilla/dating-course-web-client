@@ -17,6 +17,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly storage = inject(StorageService);
   private readonly tokenService = inject(TokenService);
+  private readonly baseUrl = environment.apiUrl;
 
   private readonly state = signal<AuthState>({
     currentAuth: null,
@@ -76,17 +77,14 @@ export class AuthService {
 
   async login(credentials: LoginDto): Promise<Auth> {
     const auth = await firstValueFrom(
-      this.http.post<Auth>(`${environment.apiUrl}/account/login`, credentials)
+      this.http.post<Auth>(`${this.baseUrl}/account/login`, credentials)
     );
     this.handleSuccessfulAuth(auth);
     return auth;
   }
 
   register(userData: RegisterDto): Observable<void> {
-    return this.http.post<void>(
-      `${environment.apiUrl}/account/register`,
-      userData
-    );
+    return this.http.post<void>(`${this.baseUrl}/account/register`, userData);
   }
 
   logout(): void {
@@ -96,7 +94,7 @@ export class AuthService {
 
   changePassword(changePasswordData: ChangePasswordForm): Observable<void> {
     return this.http.post<void>(
-      `${environment.apiUrl}/account/change-password`,
+      `${this.baseUrl}/account/change-password`,
       changePasswordData
     );
   }
