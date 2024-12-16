@@ -4,6 +4,7 @@ import { Observable, of, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PaginatedResult } from '../interfaces/paginated-result';
 import { User } from '../interfaces/user';
+import { Photo } from '../interfaces/photo';
 import { UserParams } from '../interfaces/user-params';
 import { UserUpdate } from '../interfaces/user-update';
 import { AuthService } from './auth.service';
@@ -41,7 +42,6 @@ export class UserService {
     }
   }
 
-  // Public API
   getUsers(): Observable<PaginatedResult<User[]>> {
     const currentParams = this.paramsService.getParams();
     if (!currentParams) return of(this.emptyPaginatedResult);
@@ -64,6 +64,10 @@ export class UserService {
     return this.http
       .put<void>(`${this.baseUrl}/user/${userId}`, updates)
       .pipe(map(() => this.handleUserUpdate(userId, updates)));
+  }
+
+  uploadPhoto(file: FormData): Observable<Photo> {
+    return this.http.post<Photo>(`${this.baseUrl}/user/add-photo`, file);
   }
 
   setMainPhoto(photoId: number): Observable<void> {
@@ -97,7 +101,6 @@ export class UserService {
     return this.paginatedResult();
   }
 
-  // Private methods
   private fetchUsers(params: UserParams): Observable<PaginatedResult<User[]>> {
     const httpParams = this.buildHttpParams(params);
 
