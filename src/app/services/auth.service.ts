@@ -3,8 +3,8 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Auth } from '../interfaces/auth';
-import { LoginDto } from '../interfaces/login-dto';
-import { RegisterDto } from '../interfaces/register-dto';
+import { LoginForm } from '../interfaces/login-form';
+import { RegisterForm } from '../interfaces/register-form';
 import { StorageService } from './storage.service';
 import { TokenService } from './token.service';
 import { AuthState } from '../interfaces/auth-state';
@@ -75,7 +75,7 @@ export class AuthService {
     return this.state().isInitialized;
   }
 
-  async login(credentials: LoginDto): Promise<Auth> {
+  async login(credentials: LoginForm): Promise<Auth> {
     const auth = await firstValueFrom(
       this.http.post<Auth>(`${this.baseUrl}/account/login`, credentials)
     );
@@ -83,7 +83,7 @@ export class AuthService {
     return auth;
   }
 
-  register(userData: RegisterDto): Observable<void> {
+  register(userData: RegisterForm): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/account/register`, userData);
   }
 
