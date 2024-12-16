@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { environment } from '../../../environments/environment';
-import { LoginDto } from '../../interfaces/login-dto';
+import { LoginForm } from '../../interfaces/login-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';
 
@@ -60,8 +60,8 @@ export class LoginPageComponent {
   protected async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) return;
 
-    const formValue = this.loginForm.value as LoginDto;
-    const loginData: LoginDto = {
+    const formValue = this.loginForm.value as LoginForm;
+    const loginData: LoginForm = {
       email: formValue.email.trim().toLowerCase(),
       password: formValue.password,
     };
@@ -94,7 +94,7 @@ export class LoginPageComponent {
     }
   }
 
-  protected getFieldError(fieldName: keyof LoginDto): string {
+  protected getFieldError(fieldName: keyof LoginForm): string {
     const control = this.loginForm.get(fieldName);
 
     if (!control || !control.errors || !control.touched) return '';
