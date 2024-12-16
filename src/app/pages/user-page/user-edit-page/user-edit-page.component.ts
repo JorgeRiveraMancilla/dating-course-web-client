@@ -8,7 +8,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { PhotoEditorComponent } from './components/photo-editor/photo-editor.component';
 
-export enum TabType {
+enum TabType {
   EditProfile = 'editProfile',
   ChangePassword = 'changePassword',
   Photos = 'photos',
@@ -29,6 +29,11 @@ export enum TabType {
 export class UserEditPageComponent implements OnInit, HasUnsavedChanges {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly tabMap = new Map<string, number>([
+    [TabType.EditProfile, 0],
+    [TabType.ChangePassword, 1],
+    [TabType.Photos, 2],
+  ]);
 
   @ViewChild(EditProfileComponent)
   private editProfileComponent!: EditProfileComponent;
@@ -38,13 +43,6 @@ export class UserEditPageComponent implements OnInit, HasUnsavedChanges {
   protected user: User = {} as User;
   protected loading = false;
   protected activeTabIndex = 0;
-
-  // Mapeamos los índices de los tabs con sus identificadores
-  private readonly tabMap = new Map<string, number>([
-    [TabType.EditProfile, 0],
-    [TabType.ChangePassword, 1],
-    [TabType.Photos, 2],
-  ]);
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((params) => {
@@ -62,9 +60,7 @@ export class UserEditPageComponent implements OnInit, HasUnsavedChanges {
     });
   }
 
-  // Corregimos el tipo del parámetro para que coincida con el evento emitido
   protected onTabChange(index: number): void {
-    // Utilizamos Array.from y find con un destructuring más explícito
     const tabEntry = Array.from(this.tabMap.entries()).find(
       ([, value]) => value === index
     );
