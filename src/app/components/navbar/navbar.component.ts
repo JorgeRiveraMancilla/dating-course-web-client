@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { MenuModule } from 'primeng/menu';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MenubarModule } from 'primeng/menubar';
+import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ import { MenubarModule } from 'primeng/menubar';
     MenuModule,
     ProgressSpinnerModule,
     MenubarModule,
+    HasRoleDirective,
   ],
   templateUrl: './navbar.component.html',
 })

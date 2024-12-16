@@ -12,14 +12,27 @@
     </a>
 
     @if (currentAuth()) {
-    <p-button
-      routerLink="/users"
-      [text]="true"
-      [severity]="router.url === '/users' ? 'primary' : 'secondary'"
-      styleClass="no-underline focus:outline-none focus:shadow-none"
-    >
-      Usuarios
-    </p-button>
+    <div>
+      <p-button
+        routerLink="/users"
+        [text]="true"
+        [severity]="router.url === '/users' ? 'primary' : 'secondary'"
+        styleClass="no-underline focus:outline-none focus:shadow-none"
+      >
+        Usuarios
+      </p-button>
+
+      <p-button
+        *appHasRole="['Admin', 'Moderator']"
+        routerLink="/admin"
+        [text]="true"
+        [severity]="router.url === '/admin' ? 'primary' : 'secondary'"
+        styleClass="no-underline focus:outline-none focus:shadow-none"
+      >
+        Administración
+      </p-button>
+    </div>
+
     }
   </div>
 
