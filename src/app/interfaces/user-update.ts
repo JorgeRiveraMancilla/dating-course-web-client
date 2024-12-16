@@ -1,7 +1,11 @@
 export interface UserUpdate {
+  userName: string;
+  knownAs: string;
+  gender: string;
+  birthDate: string;
+  city: string;
+  country: string;
   introduction?: string;
-  interests?: string;
   lookingFor?: string;
-  city?: string;
-  country?: string;
+  interests?: string;
 }
