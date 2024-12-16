@@ -1,5 +1,4 @@
 <div class="flex flex-column gap-3">
-  <!-- Filters Form -->
   <form [formGroup]="filterForm" class="flex justify-content-center gap-3">
     <div class="flex flex-column justify-content-center">
       <label for="minAge" class="font-medium">Desde:</label>
@@ -85,7 +84,6 @@
     </div>
   </form>
 
-  <!-- User Cards Grid -->
   <div class="flex flex-wrap justify-content-center gap-3">
     @for (user of users; track user.id) {
     <app-user-card [user]="user"></app-user-card>
@@ -103,7 +101,6 @@
     }
   </div>
 
-  <!-- Pagination -->
   @if (0 < pagination.totalItems) {
   <div class="flex justify-content-center">
     <p-paginator

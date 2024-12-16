@@ -2,9 +2,9 @@ import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { User } from '../../interfaces/user';
-import { LikeService } from '../../services/like.service';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
+import { User } from '../../../../interfaces/user';
+import { LikeService } from '../../../../services/like.service';
 
 @Component({
   selector: 'app-user-card',

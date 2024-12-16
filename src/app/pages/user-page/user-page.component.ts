@@ -14,7 +14,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PaginatorState, PaginatorModule } from 'primeng/paginator';
-import { UserCardComponent } from '../../components/user-card/user-card.component';
 import { Pagination } from '../../interfaces/pagination';
 import { User } from '../../interfaces/user';
 import { UserParams } from '../../interfaces/user-params';
@@ -22,6 +21,7 @@ import { FormValidatorService } from '../../services/form-validator.service';
 import { UserService } from '../../services/user.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
+import { UserCardComponent } from './components/user-card/user-card.component';
 
 @Component({
   selector: 'app-user-page',
@@ -64,7 +64,6 @@ export class UserPageComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Protected Methods
   protected onSubmit(): void {
     if (this.filterForm.invalid) return;
 
@@ -107,7 +106,6 @@ export class UserPageComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Private Methods
   private initializeUserParams(): void {
     const currentParams = this.userService.getUserParams();
     if (currentParams) {
