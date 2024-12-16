@@ -1,0 +1,50 @@
+<div class="card flex justify-content-center">
+  <p-table
+    [value]="users"
+    [tableStyle]="{ width: '1200px' }"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="pagination.itemsPerPage"
+    [totalRecords]="pagination.totalItems"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [showCurrentPageReport]="true"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+    styleClass="p-datatable-gridlines"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 30%">Usuario</th>
+        <th style="width: 40%">Roles</th>
+        <th style="width: 30%">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td style="width: 30%">{{ user.userName }}</td>
+        <td style="width: 40%">
+          <div class="flex gap-2">
+            <p-tag
+              *ngFor="let role of user.roles"
+              [value]="role"
+              [severity]="getRoleSeverity(role)"
+            ></p-tag>
+          </div>
+        </td>
+        <td style="width: 30%">
+          <p-button
+            [disabled]="!canEditUser(user)"
+            [label]="
+              user.roles.includes('Moderator')
+                ? 'Quitar Moderador'
+                : 'Hacer Moderador'
+            "
+            [severity]="user.roles.includes('Moderator') ? 'danger' : 'success'"
+            (onClick)="toggleModeratorRole(user)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

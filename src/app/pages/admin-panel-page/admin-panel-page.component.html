@@ -1,0 +1,16 @@
+<div class="flex justify-content-center">
+  <p-card [style]="{ width: '100rem' }">
+    <p-tabView
+      [(activeIndex)]="activeTabIndex"
+      (activeIndexChange)="onTabChange($event)"
+    >
+      <p-tabPanel header="Gestión de usuarios">
+        <app-user-management />
+      </p-tabPanel>
+
+      <p-tabPanel header="Gestión de fotos">
+        <app-photo-management />
+      </p-tabPanel>
+    </p-tabView>
+  </p-card>
+</div>
