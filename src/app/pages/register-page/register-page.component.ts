@@ -18,7 +18,6 @@ import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { RegisterDto } from '../../interfaces/register-dto';
 import { RegisterForm } from '../../interfaces/register-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';
@@ -91,17 +90,19 @@ export class RegisterPageComponent {
   protected onSubmit(): void {
     if (this.registerForm.invalid) return;
 
-    const formValue = this.registerForm.value as RegisterForm;
-    const registerData: RegisterDto = {
-      userName: formValue.userName.trim(),
-      email: formValue.email.trim().toLowerCase(),
-      knownAs: formValue.knownAs.trim(),
-      gender: formValue.gender,
-      birthDate: formValue.birthDate!.toISOString().split('T')[0],
-      city: formValue.city.trim(),
-      country: formValue.country.trim(),
-      password: formValue.password,
-      confirmPassword: formValue.confirmPassword,
+    const registerData: RegisterForm = {
+      userName: this.registerForm.get('userName')!.value.trim(),
+      email: this.registerForm.get('email')!.value.trim(),
+      knownAs: this.registerForm.get('knownAs')!.value.trim(),
+      gender: this.registerForm.get('gender')!.value,
+      birthDate: this.registerForm
+        .get('birthDate')!
+        .value.toISOString()
+        .split('T')[0],
+      city: this.registerForm.get('city')!.value.trim(),
+      country: this.registerForm.get('country')!.value.trim(),
+      password: this.registerForm.get('password')!.value,
+      confirmPassword: this.registerForm.get('confirmPassword')!.value,
     };
 
     this.loading = true;
