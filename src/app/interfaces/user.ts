@@ -5,11 +5,12 @@ export interface User {
   userName: string;
   email: string;
   knownAs: string;
+  birthDate: string;
   age: number;
   gender: string;
   introduction?: string;
-  interests?: string;
   lookingFor?: string;
+  interests?: string;
   city: string;
   country: string;
   created: Date;
