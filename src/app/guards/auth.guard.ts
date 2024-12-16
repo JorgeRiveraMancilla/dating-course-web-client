@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = async () => {
 
   const auth = authService.getCurrentAuth();
 
-  if (auth === null) {
+  if (auth == null) {
     messageService.add({
       severity: 'error',
       summary: 'Acceso denegado',
