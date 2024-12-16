@@ -1,0 +1,192 @@
+<form
+  [formGroup]="profileForm"
+  (ngSubmit)="onProfileSubmit()"
+  class="flex flex-column gap-2"
+>
+  <div class="grid">
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="userName" class="font-medium">Nombre de usuario</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-user"></i>
+          <input
+            id="userName"
+            type="text"
+            pInputText
+            class="w-full"
+            formControlName="userName"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError(profileForm, 'userName')
+            }"
+          />
+        </span>
+        @if (getFieldError(profileForm, 'userName')) {
+        <small class="p-error">{{
+          getFieldError(profileForm, 'userName')
+        }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="knownAs" class="font-medium">Apodo</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-id-card"></i>
+          <input
+            id="knownAs"
+            type="text"
+            pInputText
+            class="w-full"
+            formControlName="knownAs"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError(profileForm, 'knownAs')
+            }"
+          />
+        </span>
+        @if (getFieldError(profileForm, 'knownAs')) {
+        <small class="p-error">{{
+          getFieldError(profileForm, 'knownAs')
+        }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="gender" class="font-medium">Género</label>
+        <p-dropdown
+          id="gender"
+          formControlName="gender"
+          [options]="genderOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          [ngClass]="{
+            'ng-invalid ng-dirty': getFieldError(profileForm, 'gender')
+          }"
+        >
+        </p-dropdown>
+        @if (getFieldError(profileForm, 'gender')) {
+        <small class="p-error">{{
+          getFieldError(profileForm, 'gender')
+        }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="birthDate" class="font-medium">Fecha de nacimiento</label>
+        <p-calendar
+          id="birthDate"
+          formControlName="birthDate"
+          [showIcon]="true"
+          [maxDate]="maxDate"
+          dateFormat="dd/mm/yy"
+          styleClass="w-full"
+          [showTime]="false"
+          [ngClass]="{
+            'ng-invalid ng-dirty': getFieldError(profileForm, 'birthDate')
+          }"
+        >
+        </p-calendar>
+        @if (getFieldError(profileForm, 'birthDate')) {
+        <small class="p-error">{{
+          getFieldError(profileForm, 'birthDate')
+        }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="city" class="font-medium">Ciudad</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-building"></i>
+          <input
+            id="city"
+            type="text"
+            pInputText
+            class="w-full"
+            formControlName="city"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError(profileForm, 'city')
+            }"
+          />
+        </span>
+        @if (getFieldError(profileForm, 'city')) {
+        <small class="p-error">{{ getFieldError(profileForm, 'city') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="flex flex-column gap-2">
+        <label for="country" class="font-medium">País</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-globe"></i>
+          <input
+            id="country"
+            type="text"
+            pInputText
+            class="w-full"
+            formControlName="country"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError(profileForm, 'country')
+            }"
+          />
+        </span>
+        @if (getFieldError(profileForm, 'country')) {
+        <small class="p-error">{{
+          getFieldError(profileForm, 'country')
+        }}</small>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-column gap-2">
+    <div class="flex flex-column gap-2">
+      <label for="introduction" class="font-medium">Descripción</label>
+      <textarea
+        id="introduction"
+        rows="2"
+        class="w-full"
+        pInputTextarea
+        formControlName="introduction"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="lookingFor" class="font-medium">Qué busco</label>
+      <textarea
+        id="lookingFor"
+        rows="2"
+        class="w-full"
+        pInputTextarea
+        formControlName="lookingFor"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="interests" class="font-medium">Intereses</label>
+      <textarea
+        id="interests"
+        rows="2"
+        class="w-full"
+        pInputTextarea
+        formControlName="interests"
+      ></textarea>
+    </div>
+  </div>
+
+  <p-button
+    type="submit"
+    label="Guardar cambios"
+    styleClass="w-full mt-3"
+    [loading]="loading"
+    [disabled]="!profileForm.valid || loading || !hasProfileChanges()"
+  >
+  </p-button>
+</form>
