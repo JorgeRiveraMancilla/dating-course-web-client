@@ -9,6 +9,7 @@ import { UserDetailPageComponent } from './pages/user-page/user-detail-page/user
 import { userResolver } from './resolvers/user.resolver';
 import { UserEditPageComponent } from './pages/user-page/user-edit-page/user-edit-page.component';
 import { preventUnsavedChangesGuard } from './guards/prevent-unsaved-changes.guard';
+import { AdminPanelPageComponent } from './pages/admin-panel-page/admin-panel-page.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -33,6 +34,10 @@ export const routes: Routes = [
           user: userResolver,
         },
         canDeactivate: [preventUnsavedChangesGuard],
+      },
+      {
+        path: 'admin',
+        component: AdminPanelPageComponent,
       },
     ],
   },
