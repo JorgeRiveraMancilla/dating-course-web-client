@@ -14,7 +14,6 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
-import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginDto } from '../../interfaces/login-dto';
 import { AuthService } from '../../services/auth.service';
@@ -58,7 +57,7 @@ export class LoginPageComponent {
   });
   protected loading = false;
 
-  protected onSubmit(): void {
+  protected async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) return;
 
     const formValue = this.loginForm.value as LoginDto;
@@ -69,27 +68,30 @@ export class LoginPageComponent {
 
     this.loading = true;
 
-    this.authService
-      .login(loginData)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Inicio de sesión exitoso',
-            life: this.debounceMilliseconds,
-          });
-          this.router.navigate(['/']);
-        },
-        error: (error: HttpErrorResponse) =>
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.error?.error || 'Error al iniciar sesión',
-            life: this.debounceMilliseconds,
-          }),
+    try {
+      await this.authService.login(loginData);
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Inicio de sesión exitoso',
+        life: this.debounceMilliseconds,
       });
+
+      this.router.navigate(['/']);
+    } catch (error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          error instanceof HttpErrorResponse
+            ? error.error?.error || 'Error al iniciar sesión'
+            : 'Error al iniciar sesión',
+        life: this.debounceMilliseconds,
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   protected getFieldError(fieldName: keyof LoginDto): string {
