@@ -1,0 +1,16 @@
+<div class="flex justify-content-center">
+  <p-button
+    label="Subir una foto"
+    icon="pi pi-image"
+    (onClick)="fileUpload.click()"
+    [disabled]="isUploading"
+  ></p-button>
+
+  <input
+    #fileUpload
+    type="file"
+    (change)="onFileSelected($event)"
+    accept="image/*"
+    style="display: none"
+  />
+</div>

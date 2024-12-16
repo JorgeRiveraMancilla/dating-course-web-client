@@ -1,0 +1,39 @@
+<div class="flex flex-column gap-4">
+  <div class="upload-container">
+    <div class="flex flex-column gap-3">
+      <app-photo-upload-button
+        [isUploading]="isUploading"
+        (fileSelected)="onFileSelect($event)"
+        #fileUpload
+      ></app-photo-upload-button>
+
+      <app-photo-preview
+        *ngIf="previewUrl"
+        [previewUrl]="previewUrl"
+        [isUploading]="isUploading"
+        (deletePhoto)="resetUploadState()"
+        (uploadPhoto)="uploadPhoto()"
+      ></app-photo-preview>
+
+      @if (isUploading) {
+      <div class="flex align-items-center justify-content-center p-3 gap-3">
+        <p-progressSpinner [style]="{ width: '25px', height: '25px' }" />
+        <span class="sr-only">Cargando...</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <p-message
+    severity="info"
+    text="Las fotos deben ser aprobadas por un moderador antes de poder establecerlas como foto principal"
+    styleClass="w-full"
+  ></p-message>
+
+  <app-photo-grid
+    [photos]="user.photos"
+    [deletingPhotoId]="deletingPhotoId"
+    (setMainPhoto)="setMainPhoto($event)"
+    (deletePhoto)="deletePhoto($event)"
+  ></app-photo-grid>
+</div>

@@ -1,0 +1,71 @@
+<div class="grid">
+  @if (photos.length === 0) {
+  <div class="col-12">
+    <div class="flex flex-column align-items-center gap-1">
+      <i class="pi pi-images text-5xl text-500"></i>
+      <span class="text-xl text-500">No hay fotos disponibles</span>
+      <span class="text-sm text-500">Las fotos que subas aparecerán aquí</span>
+    </div>
+  </div>
+  } @else { @for (photo of photos; track photo.id) {
+  <div class="col-12 md:col-4 lg:col-3">
+    <p-card>
+      <ng-template pTemplate="content">
+        <div class="relative">
+          <img
+            [src]="photo.url"
+            [alt]="'Photo ' + photo.id"
+            class="w-full h-12rem object-cover"
+          />
+
+          @if (deletingPhotoId === photo.id) {
+          <div
+            class="absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center"
+          >
+            <p-progressSpinner
+              [style]="{ width: '50px', height: '50px' }"
+              strokeWidth="4"
+              animationDuration=".5s"
+            ></p-progressSpinner>
+          </div>
+          }
+        </div>
+
+        <div class="flex justify-content-between p-3">
+          <div class="flex align-items-center gap-2">
+            <p-button
+              icon="pi pi-star"
+              [outlined]="!photo.isMain"
+              [disabled]="
+                photo.isMain ||
+                !photo.isApproved ||
+                deletingPhotoId === photo.id
+              "
+              (onClick)="setMainPhoto.emit(photo.id)"
+              [pTooltip]="getMainPhotoTooltip(photo)"
+              styleClass="p-button-sm"
+            ></p-button>
+
+            @if (!photo.isApproved) {
+            <i
+              class="pi pi-clock text-yellow-500"
+              pTooltip="Pendiente de aprobación"
+            ></i>
+            }
+          </div>
+
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [outlined]="true"
+            [disabled]="photo.isMain || deletingPhotoId === photo.id"
+            (onClick)="handleDeletePhoto(photo.id)"
+            pTooltip="Eliminar foto"
+            styleClass="p-button-sm"
+          ></p-button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+  }}
+</div>

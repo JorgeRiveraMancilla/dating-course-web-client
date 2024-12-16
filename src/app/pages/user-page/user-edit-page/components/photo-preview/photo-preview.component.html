@@ -1,0 +1,30 @@
+<div class="preview-container border-1 border-round surface-border p-3">
+  <div
+    class="relative flex justify-content-center align-items-center"
+    style="height: 400px"
+  >
+    <img
+      [src]="previewUrl"
+      alt="Vista previa"
+      class="max-w-full max-h-full object-contain"
+    />
+    <button
+      type="button"
+      class="absolute top-0 right-0 m-2 border-round-lg p-2 border-none text-white hover:bg-red-600 transition-colors transition-duration-200 cursor-pointer"
+      style="background-color: #f44336"
+      (click)="deletePhoto.emit()"
+      [attr.aria-label]="'Eliminar imagen'"
+    >
+      <i class="pi pi-trash text-xl" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  @if (!isUploading) {
+  <p-button
+    label="Subir foto"
+    icon="pi pi-upload"
+    (onClick)="uploadPhoto.emit()"
+    styleClass="mt-3 w-full"
+  ></p-button>
+  }
+</div>

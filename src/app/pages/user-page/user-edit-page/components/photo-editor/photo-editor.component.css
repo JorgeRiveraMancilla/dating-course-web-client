@@ -1,0 +1,17 @@
+:host ::ng-deep .p-fileupload {
+  .p-fileupload-row-actions,
+  .p-fileupload-files .p-fileupload-row > div:last-child,
+  .p-fileupload-files .p-fileupload-row .p-button-icon-only,
+  .p-fileupload-files,
+  .p-fileupload-file-name,
+  .p-fileupload-file-size {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+  }
+}
