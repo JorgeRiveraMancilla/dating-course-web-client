@@ -6,7 +6,9 @@ import { authGuard } from './guards/auth.guard';
 import { UserPageComponent } from './pages/user-page/user-page.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { UserDetailPageComponent } from './pages/user-page/user-detail-page/user-detail-page.component';
-import { userDetailPageResolverResolver } from './resolvers/user-detail-page-resolver.resolver';
+import { userResolver } from './resolvers/user.resolver';
+import { UserEditPageComponent } from './pages/user-page/user-edit-page/user-edit-page.component';
+import { preventUnsavedChangesGuard } from './guards/prevent-unsaved-changes.guard';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -21,8 +23,16 @@ export const routes: Routes = [
         path: 'users/:id',
         component: UserDetailPageComponent,
         resolve: {
-          user: userDetailPageResolverResolver,
+          user: userResolver,
         },
+      },
+      {
+        path: 'users/:id/edit',
+        component: UserEditPageComponent,
+        resolve: {
+          user: userResolver,
+        },
+        canDeactivate: [preventUnsavedChangesGuard],
       },
     ],
   },
