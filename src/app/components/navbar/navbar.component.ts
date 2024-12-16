@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, computed } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { MenuModule } from 'primeng/menu';
@@ -25,15 +24,15 @@ export class NavbarComponent {
   private readonly authService = inject(AuthService);
   protected readonly router = inject(Router);
 
-  readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
-  readonly isAuthInitialized = computed(() =>
-    this.authService.isAuthInitialized()
+  protected readonly isInitialized = computed(() =>
+    this.authService.getIsInitialized()
   );
-  readonly currentUser = computed(() => this.authService.getCurrentAuth());
 
-  protected readonly userMenu: {
-    items: MenuItem[];
-  } = {
+  protected readonly currentAuth = computed(() =>
+    this.authService.getCurrentAuth()
+  );
+
+  protected readonly userMenu = computed(() => ({
     items: [
       {
         label: 'Editar perfil',
@@ -47,7 +46,7 @@ export class NavbarComponent {
         command: () => this.onLogoutClick(),
       },
     ],
-  };
+  }));
 
   protected onLoginClick(): void {
     this.router.navigate(['login']);
@@ -62,12 +61,14 @@ export class NavbarComponent {
   }
 
   protected onUsersClick(): void {
-    console.log('Navegando a users...');
     this.router.navigate(['users']);
   }
 
   private onEditProfileClick(): void {
-    this.router.navigate(['users', this.currentUser()?.userId, 'edit']);
+    const auth = this.currentAuth();
+    if (auth) {
+      this.router.navigate(['users', auth.userId, 'edit']);
+    }
   }
 
   private onLogoutClick(): void {
