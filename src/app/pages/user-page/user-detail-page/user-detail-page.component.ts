@@ -8,7 +8,6 @@ import { GalleriaModule } from 'primeng/galleria';
 import { TabViewModule } from 'primeng/tabview';
 import { Photo } from '../../../interfaces/photo';
 import { User } from '../../../interfaces/user';
-import { AuthService } from '../../../services/auth.service';
 import { environment } from '../../../../environments/environment';
 import { LikeService } from '../../../services/like.service';
 
@@ -26,11 +25,9 @@ import { LikeService } from '../../../services/like.service';
   templateUrl: './user-detail-page.component.html',
 })
 export class UserDetailPageComponent implements OnInit {
-  private readonly authService = inject(AuthService);
-  private readonly route = inject(ActivatedRoute);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly likeService = inject(LikeService);
 
-  protected readonly auth = this.authService.getCurrentAuth();
   protected user: User = {} as User;
   protected readonly defaultImageUrl = environment.defaultUserImageUrl;
   protected activeTabIndex = 0;
@@ -42,10 +39,20 @@ export class UserDetailPageComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.initializeComponent();
+    this.activatedRoute.data.subscribe({
+      next: (data) => {
+        if (data['user']) this.user = data['user'];
+      },
+    });
+
+    this.activatedRoute.queryParams.subscribe({
+      next: (params) => {
+        if (params['tab']) this.selectTab(params['tab']);
+      },
+    });
   }
 
-  protected get userDetails() {
+  protected get userDetails(): { label: string; value: string }[] {
     return [
       {
         label: 'Ubicación',
@@ -73,7 +80,7 @@ export class UserDetailPageComponent implements OnInit {
     ];
   }
 
-  protected get userSections() {
+  protected get userSections(): { title: string; content: string }[] {
     return [
       {
         title: 'Descripción',
@@ -104,20 +111,6 @@ export class UserDetailPageComponent implements OnInit {
 
   protected onMessageClick(): void {
     this.selectTab('Mensajes');
-  }
-
-  private initializeComponent(): void {
-    this.route.data.subscribe({
-      next: (data) => {
-        if (data['user']) this.user = data['user'];
-      },
-    });
-
-    this.route.queryParams.subscribe({
-      next: (params) => {
-        if (params['tab']) this.selectTab(params['tab']);
-      },
-    });
   }
 
   private selectTab(tabName: string): void {
