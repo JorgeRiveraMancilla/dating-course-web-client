@@ -1,131 +1,384 @@
-<div class="grid" *ngIf="user">
-  <div class="col-12 md:col-4">
-    <h1 class="text-2xl mb-3">Tu perfil</h1>
-  </div>
-
-  <div class="col-12 md:col-8">
-    <p-message
-      *ngIf="editForm?.dirty"
-      severity="info"
-      text="Has realizado cambios que no se han guardado."
-      styleClass="w-full"
-    >
-    </p-message>
-  </div>
-
-  <div class="col-12 md:col-4">
-    <p-card>
-      <ng-template pTemplate="header">
-        <img
-          [src]="user.mainPhoto?.url || 'assets/user.png'"
-          [alt]="user.knownAs"
-          class="w-full h-25rem object-cover"
-        />
-      </ng-template>
-
-      <div class="flex flex-column gap-3">
-        <div class="field">
-          <span class="font-bold block mb-2">Ubicación:</span>
-          <span>{{ user.city }}, {{ user.country }}</span>
-        </div>
-        <div class="field">
-          <span class="font-bold block mb-2">Edad:</span>
-          <span>{{ user.age }} años</span>
-        </div>
-        <div class="field">
-          <span class="font-bold block mb-2">Última conexión:</span>
-          <span>{{ user.lastActive | date : 'short' }}</span>
-        </div>
-        <div class="field">
-          <span class="font-bold block mb-2">Miembro desde:</span>
-          <span>{{ user.created | date : 'dd MMM yyyy' }}</span>
-        </div>
-      </div>
-
-      <ng-template pTemplate="footer">
-        <p-button
-          [disabled]="!editForm?.dirty"
-          type="submit"
-          form="editForm"
-          label="Guardar cambios"
-          styleClass="w-full"
+<div class="flex justify-content-center px-5">
+  <p-card [style]="{ width: '70rem' }">
+    <p-tabView [(activeIndex)]="activeTabIndex">
+      <!-- Profile Tab -->
+      <p-tabPanel header="Editar Perfil">
+        <form
+          [formGroup]="profileForm"
+          (ngSubmit)="onProfileSubmit()"
+          class="flex flex-column gap-2"
         >
-        </p-button>
-      </ng-template>
-    </p-card>
-  </div>
-
-  <div class="col-12 md:col-8">
-    <p-tabView>
-      <p-tabPanel [header]="'Acerca de ' + user.knownAs">
-        <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()">
-          <div class="flex flex-column gap-4">
-            <div class="field">
-              <h4>Descripción</h4>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="user.introduction"
-                name="introduction"
-                rows="6"
-                class="w-full"
-              >
-              </textarea>
-            </div>
-
-            <div class="field">
-              <h4>Qué busca</h4>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="user.lookingFor"
-                name="lookingFor"
-                rows="6"
-                class="w-full"
-              >
-              </textarea>
-            </div>
-
-            <div class="field">
-              <h4>Intereses</h4>
-              <textarea
-                pInputTextarea
-                [(ngModel)]="user.interests"
-                name="interests"
-                rows="6"
-                class="w-full"
-              >
-              </textarea>
-            </div>
-
-            <div class="field">
-              <h4>Detalles de ubicación</h4>
-              <div class="flex align-items-center gap-3">
-                <div class="field flex-1">
-                  <label for="city" class="block mb-2">Ciudad</label>
+          <!-- Form Fields Grid -->
+          <div class="grid">
+            <!-- Primera fila -->
+            <div class="col-4">
+              <!-- Username -->
+              <div class="flex flex-column gap-2">
+                <label for="userName" class="font-medium"
+                  >Nombre de usuario</label
+                >
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-user"></i>
                   <input
+                    id="userName"
+                    type="text"
                     pInputText
-                    [(ngModel)]="user.city"
+                    class="w-full"
+                    formControlName="userName"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty': getFieldError(
+                        profileForm,
+                        'userName'
+                      )
+                    }"
+                  />
+                </span>
+                @if (getFieldError(profileForm, 'userName')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'userName')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- Known as -->
+              <div class="flex flex-column gap-2">
+                <label for="knownAs" class="font-medium">Apodo</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-id-card"></i>
+                  <input
+                    id="knownAs"
+                    type="text"
+                    pInputText
+                    class="w-full"
+                    formControlName="knownAs"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty': getFieldError(
+                        profileForm,
+                        'knownAs'
+                      )
+                    }"
+                  />
+                </span>
+                @if (getFieldError(profileForm, 'knownAs')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'knownAs')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- Gender -->
+              <div class="flex flex-column gap-2">
+                <label for="gender" class="font-medium">Género</label>
+                <p-dropdown
+                  id="gender"
+                  formControlName="gender"
+                  [options]="genderOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  styleClass="w-full"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty': getFieldError(profileForm, 'gender')
+                  }"
+                >
+                </p-dropdown>
+                @if (getFieldError(profileForm, 'gender')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'gender')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <!-- Segunda fila -->
+            <div class="col-4">
+              <!-- Birth Date -->
+              <div class="flex flex-column gap-2">
+                <label for="birthDate" class="font-medium"
+                  >Fecha de nacimiento</label
+                >
+                <p-calendar
+                  id="birthDate"
+                  formControlName="birthDate"
+                  [showIcon]="true"
+                  [maxDate]="maxDate"
+                  dateFormat="dd/mm/yy"
+                  styleClass="w-full"
+                  [showTime]="false"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty': getFieldError(
+                      profileForm,
+                      'birthDate'
+                    )
+                  }"
+                >
+                </p-calendar>
+                @if (getFieldError(profileForm, 'birthDate')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'birthDate')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- City -->
+              <div class="flex flex-column gap-2">
+                <label for="city" class="font-medium">Ciudad</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-building"></i>
+                  <input
                     id="city"
-                    name="city"
-                    class="w-full"
-                  />
-                </div>
-                <div class="field flex-1">
-                  <label for="country" class="block mb-2">País</label>
-                  <input
+                    type="text"
                     pInputText
-                    [(ngModel)]="user.country"
-                    id="country"
-                    name="country"
                     class="w-full"
+                    formControlName="city"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty': getFieldError(profileForm, 'city')
+                    }"
                   />
-                </div>
+                </span>
+                @if (getFieldError(profileForm, 'city')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'city')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- Country -->
+              <div class="flex flex-column gap-2">
+                <label for="country" class="font-medium">País</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-globe"></i>
+                  <input
+                    id="country"
+                    type="text"
+                    pInputText
+                    class="w-full"
+                    formControlName="country"
+                    [ngClass]="{
+                      'ng-invalid ng-dirty': getFieldError(
+                        profileForm,
+                        'country'
+                      )
+                    }"
+                  />
+                </span>
+                @if (getFieldError(profileForm, 'country')) {
+                <small class="p-error">{{
+                  getFieldError(profileForm, 'country')
+                }}</small>
+                }
               </div>
             </div>
           </div>
+
+          <!-- Additional Fields -->
+          <div class="flex flex-column gap-2">
+            <div class="flex flex-column gap-2">
+              <label for="introduction" class="font-medium">Descripción</label>
+              <textarea
+                id="introduction"
+                rows="2"
+                class="w-full"
+                pInputTextarea
+                formControlName="introduction"
+              ></textarea>
+            </div>
+
+            <div class="flex flex-column gap-2">
+              <label for="lookingFor" class="font-medium">Qué busco</label>
+              <textarea
+                id="lookingFor"
+                rows="2"
+                class="w-full"
+                pInputTextarea
+                formControlName="lookingFor"
+              ></textarea>
+            </div>
+
+            <div class="flex flex-column gap-2">
+              <label for="interests" class="font-medium">Intereses</label>
+              <textarea
+                id="interests"
+                rows="2"
+                class="w-full"
+                pInputTextarea
+                formControlName="interests"
+              ></textarea>
+            </div>
+          </div>
+
+          <p-button
+            type="submit"
+            label="Guardar cambios"
+            styleClass="w-full mt-3"
+            [loading]="loading"
+            [disabled]="!profileForm.valid || loading || !hasProfileChanges()"
+          >
+          </p-button>
         </form>
       </p-tabPanel>
 
-      <p-tabPanel header="Fotos"> Próximamente... </p-tabPanel>
+      <!-- Password Tab -->
+      <p-tabPanel header="Cambiar Contraseña">
+        <form
+          [formGroup]="passwordForm"
+          (ngSubmit)="onPasswordSubmit()"
+          class="flex flex-column gap-2"
+        >
+          <div class="grid">
+            <div class="col-4">
+              <!-- Current Password -->
+              <div class="flex flex-column gap-2">
+                <label for="currentPassword" class="font-medium"
+                  >Contraseña actual</label
+                >
+                <p-password
+                  id="currentPassword"
+                  formControlName="currentPassword"
+                  [feedback]="false"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  [inputStyle]="{ width: '100%' }"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty': getFieldError(
+                      passwordForm,
+                      'currentPassword'
+                    )
+                  }"
+                >
+                </p-password>
+                @if (getFieldError(passwordForm, 'currentPassword')) {
+                <small class="p-error">{{
+                  getFieldError(passwordForm, 'currentPassword')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- New Password -->
+              <div class="flex flex-column gap-2">
+                <label for="newPassword" class="font-medium"
+                  >Nueva contraseña</label
+                >
+                <p-password
+                  id="newPassword"
+                  formControlName="newPassword"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  [inputStyle]="{ width: '100%' }"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty': getFieldError(
+                      passwordForm,
+                      'newPassword'
+                    )
+                  }"
+                >
+                </p-password>
+                @if (getFieldError(passwordForm, 'newPassword')) {
+                <small class="p-error">{{
+                  getFieldError(passwordForm, 'newPassword')
+                }}</small>
+                }
+              </div>
+            </div>
+
+            <div class="col-4">
+              <!-- Confirm New Password -->
+              <div class="flex flex-column gap-2">
+                <label for="confirmPassword" class="font-medium"
+                  >Confirmar contraseña</label
+                >
+                <p-password
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  [feedback]="false"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  [inputStyle]="{ width: '100%' }"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty': getFieldError(
+                      passwordForm,
+                      'confirmPassword'
+                    )
+                  }"
+                >
+                </p-password>
+                @if (getFieldError(passwordForm, 'confirmPassword')) {
+                <small class="p-error">{{
+                  getFieldError(passwordForm, 'confirmPassword')
+                }}</small>
+                }
+              </div>
+            </div>
+          </div>
+
+          <p-button
+            type="submit"
+            label="Cambiar contraseña"
+            styleClass="w-full mt-3"
+            [loading]="loading"
+            [disabled]="!passwordForm.valid || loading"
+          >
+          </p-button>
+        </form>
+      </p-tabPanel>
+
+      <!-- Photos Tab -->
+      <p-tabPanel header="Fotos">
+        <!-- <div class="flex flex-column gap-4">
+          <p-fileUpload
+            #fileUpload
+            mode="basic"
+            chooseLabel="Subir foto"
+            [auto]="true"
+            accept="image/*"
+            (uploadHandler)="onPhotoUpload($event)"
+            [customUpload]="true"
+            styleClass="w-full"
+          >
+          </p-fileUpload>
+
+          <div class="grid">
+            @for (photo of user.photos; track photo.id) {
+            <div class="col-12 md:col-4 lg:col-3">
+              <p-card>
+                <img
+                  [src]="photo.url"
+                  [alt]="'Photo ' + photo.id"
+                  class="w-full"
+                  style="height: 200px; object-fit: cover"
+                />
+                <div class="flex justify-content-between mt-3">
+                  <p-button
+                    icon="pi pi-star"
+                    [outlined]="!photo.isMain"
+                    [disabled]="photo.isMain"
+                    (onClick)="onSetMainPhoto(photo.id)"
+                  >
+                  </p-button>
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [outlined]="true"
+                    [disabled]="photo.isMain"
+                    (onClick)="onDeletePhoto(photo.id)"
+                  >
+                  </p-button>
+                </div>
+              </p-card>
+            </div>
+            }
+          </div>
+        </div> -->
+      </p-tabPanel>
     </p-tabView>
-  </div>
+  </p-card>
 </div>
