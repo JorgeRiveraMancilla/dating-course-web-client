@@ -1,13 +1,29 @@
+@if (loading) {
+<div
+  class="flex align-items-center justify-content-center min-h-screen surface-ground"
+>
+  <div class="text-center">
+    <p-progressSpinner
+      strokeWidth="4"
+      [style]="{ width: '50px', height: '50px' }"
+      animationDuration=".5s"
+    />
+    <div class="mt-4 text-primary-600">Inicializando aplicación...</div>
+  </div>
+</div>
+} @else {
 <div class="flex flex-column min-h-screen">
-  <app-navbar></app-navbar>
+  @defer (when !loading) {
+  <app-navbar />
 
-  <p-toast></p-toast>
-
-  <p-confirmDialog></p-confirmDialog>
+  <p-toast />
+  <p-confirmDialog />
 
   <main class="flex-1 flex align-items-start justify-content-center p-4 mt-8">
-    <router-outlet></router-outlet>
+    <router-outlet />
   </main>
 
-  <app-footer class="mt-auto"></app-footer>
+  <app-footer class="mt-auto" />
+  }
 </div>
+}
