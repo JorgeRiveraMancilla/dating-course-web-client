@@ -21,6 +21,7 @@ import { environment } from '../../../environments/environment';
 import { RegisterForm } from '../../interfaces/register-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-register',
@@ -36,8 +37,17 @@ import { FormValidatorService } from '../../services/form-validator.service';
     ButtonModule,
     ToastModule,
     RouterModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './register-page.component.html',
+  styles: [
+    `
+      :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+        stroke: var(--primary-color);
+        animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+      }
+    `,
+  ],
 })
 export class RegisterPageComponent {
   private readonly fb = inject(FormBuilder);

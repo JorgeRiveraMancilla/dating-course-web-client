@@ -45,12 +45,22 @@
 
     <p-button
       type="submit"
-      label="Iniciar sesión"
       [outlined]="true"
       styleClass="w-full"
-      [loading]="loading"
       [disabled]="!loginForm.valid || loading"
     >
+      <div class="flex align-items-center justify-content-center w-full gap-2">
+        @if (loading) {
+        <p-progressSpinner
+          [style]="{ width: '20px', height: '20px' }"
+          strokeWidth="4"
+          styleClass="custom-spinner"
+        ></p-progressSpinner>
+        }
+        <span class="text-center">{{
+          loading ? 'Cargando...' : 'Iniciar sesión'
+        }}</span>
+      </div>
     </p-button>
 
     <div class="text-center mt-3">

@@ -18,6 +18,7 @@ import { environment } from '../../../environments/environment';
 import { LoginForm } from '../../interfaces/login-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-login',
@@ -31,8 +32,17 @@ import { FormValidatorService } from '../../services/form-validator.service';
     PasswordModule,
     ToastModule,
     RouterModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './login-page.component.html',
+  styles: [
+    `
+      :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+        stroke: var(--primary-color);
+        animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+      }
+    `,
+  ],
 })
 export class LoginPageComponent {
   private readonly fb = inject(FormBuilder);

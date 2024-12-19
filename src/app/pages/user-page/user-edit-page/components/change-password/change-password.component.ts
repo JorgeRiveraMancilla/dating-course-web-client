@@ -16,13 +16,27 @@ import { environment } from '../../../../../../environments/environment';
 import { HasUnsavedChanges } from '../../../../../guards/prevent-unsaved-changes.guard';
 import { AuthService } from '../../../../../services/auth.service';
 import { FormValidatorService } from '../../../../../services/form-validator.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-change-password',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, PasswordModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    PasswordModule,
+    ProgressSpinnerModule,
+  ],
   standalone: true,
   templateUrl: './change-password.component.html',
-  styles: ``,
+  styles: [
+    `
+      :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+        stroke: var(--primary-color);
+        animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+      }
+    `,
+  ],
 })
 export class ChangePasswordComponent implements OnInit, HasUnsavedChanges {
   private readonly fb = inject(FormBuilder);

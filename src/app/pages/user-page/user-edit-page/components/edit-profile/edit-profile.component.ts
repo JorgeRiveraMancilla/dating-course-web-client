@@ -20,6 +20,7 @@ import { ProfileForm } from '../../../../../interfaces/profile-form';
 import { User } from '../../../../../interfaces/user';
 import { UserUpdate } from '../../../../../interfaces/user-update';
 import { UserService } from '../../../../../services/user.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-edit-profile',
@@ -32,8 +33,17 @@ import { UserService } from '../../../../../services/user.service';
     DropdownModule,
     InputTextModule,
     InputTextareaModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './edit-profile.component.html',
+  styles: [
+    `
+      :host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+        stroke: var(--primary-color);
+        animation: custom-progress-spinner-dash 1.5s ease-in-out infinite;
+      }
+    `,
+  ],
 })
 export class EditProfileComponent implements OnInit, HasUnsavedChanges {
   private readonly fb = inject(FormBuilder);
