@@ -4,4 +4,5 @@ export const environment = {
   authStorageKey: 'auth',
   debounceMilliseconds: 3000,
   defaultUserImageUrl: '/assets/user.png',
+  hubUrl: 'hub',
 };
