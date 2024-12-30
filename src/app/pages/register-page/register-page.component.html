@@ -1,228 +1,232 @@
-<p-card styleClass="shadow-3">
-  <h1 class="text-center text-2xl font-medium my-0 pb-3">Registrarse</h1>
+<div class="flex justify-content-center">
+  <p-card styleClass="shadow-3">
+    <h1 class="text-center text-2xl font-medium my-0 pb-3">Registrarse</h1>
 
-  <form
-    [formGroup]="registerForm"
-    (ngSubmit)="onSubmit()"
-    class="flex flex-column gap-3"
-  >
-    <div class="flex flex-row gap-3">
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="userName" class="font-medium">Nombre de usuario</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-user"></i>
-          <input
-            id="userName"
-            type="text"
-            pInputText
-            class="w-full"
-            formControlName="userName"
-            placeholder="Ingrese su nombre de usuario..."
-            [ngClass]="{
-              'ng-invalid ng-dirty': getFieldError('userName')
-            }"
-          />
-        </span>
-        @if (getFieldError('userName')) {
-        <small class="p-error">{{ getFieldError('userName') }}</small>
-        }
-      </div>
-
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="knownAs" class="font-medium">Apodo</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-id-card"></i>
-          <input
-            id="knownAs"
-            type="text"
-            pInputText
-            class="w-full"
-            formControlName="knownAs"
-            placeholder="Ingrese su apodo..."
-            [ngClass]="{
-              'ng-invalid ng-dirty': getFieldError('knownAs')
-            }"
-          />
-        </span>
-        @if (getFieldError('knownAs')) {
-        <small class="p-error">{{ getFieldError('knownAs') }}</small>
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-row gap-3">
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="email" class="font-medium">Correo electrónico</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-envelope"></i>
-          <input
-            id="email"
-            type="email"
-            pInputText
-            class="w-full"
-            formControlName="email"
-            placeholder="Ingrese su correo electrónico..."
-            [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('email') }"
-          />
-        </span>
-        @if (getFieldError('email')) {
-        <small class="p-error">{{ getFieldError('email') }}</small>
-        }
-      </div>
-
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="birthDate" class="font-medium">Fecha de nacimiento</label>
-        <p-calendar
-          id="birthDate"
-          formControlName="birthDate"
-          [showIcon]="true"
-          [maxDate]="maxDate"
-          dateFormat="dd/mm/yy"
-          placeholder="Seleccione su fecha de nacimiento..."
-          styleClass="w-full"
-          [ngClass]="{
-            'ng-invalid ng-dirty': getFieldError('birthDate')
-          }"
-        >
-        </p-calendar>
-        @if (getFieldError('birthDate')) {
-        <small class="p-error">{{ getFieldError('birthDate') }}</small>
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-row gap-3">
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="gender" class="font-medium">Género</label>
-        <p-dropdown
-          id="gender"
-          formControlName="gender"
-          [options]="genderOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Seleccione su género..."
-          styleClass="w-full"
-          [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('gender') }"
-        >
-        </p-dropdown>
-        @if (getFieldError('gender')) {
-        <small class="p-error">{{ getFieldError('gender') }}</small>
-        }
-      </div>
-
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="city" class="font-medium">Ciudad</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-building"></i>
-          <input
-            id="city"
-            type="text"
-            pInputText
-            class="w-full"
-            formControlName="city"
-            placeholder="Ingrese su ciudad..."
-            [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('city') }"
-          />
-        </span>
-        @if (getFieldError('city')) {
-        <small class="p-error">{{ getFieldError('city') }}</small>
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-row gap-3">
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="country" class="font-medium">País</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-globe"></i>
-          <input
-            id="country"
-            type="text"
-            pInputText
-            class="w-full"
-            formControlName="country"
-            placeholder="Ingrese su país..."
-            [ngClass]="{
-              'ng-invalid ng-dirty': getFieldError('country')
-            }"
-          />
-        </span>
-        @if (getFieldError('country')) {
-        <small class="p-error">{{ getFieldError('country') }}</small>
-        }
-      </div>
-
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="password" class="font-medium">Contraseña</label>
-        <p-password
-          id="password"
-          formControlName="password"
-          [toggleMask]="true"
-          placeholder="Ingrese su contraseña..."
-          styleClass="w-full"
-          [inputStyle]="{ width: '100%' }"
-          [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('password') }"
-        >
-        </p-password>
-        @if (getFieldError('password')) {
-        <small class="p-error">{{ getFieldError('password') }}</small>
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-row gap-3">
-      <div class="w-20rem flex flex-column gap-2">
-        <label for="confirmPassword" class="font-medium"
-          >Confirmar contraseña</label
-        >
-        <p-password
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          [feedback]="false"
-          [toggleMask]="true"
-          placeholder="Confirme su contraseña..."
-          styleClass="w-full"
-          [inputStyle]="{ width: '100%' }"
-          [ngClass]="{
-            'ng-invalid ng-dirty': getFieldError('confirmPassword')
-          }"
-        >
-        </p-password>
-        @if (getFieldError('confirmPassword')) {
-        <small class="p-error">{{ getFieldError('confirmPassword') }}</small>
-        }
-      </div>
-    </div>
-
-    <p-button
-      type="submit"
-      [outlined]="true"
-      styleClass="w-full"
-      [disabled]="!registerForm.valid || loading"
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-column gap-3"
     >
-      <div class="flex align-items-center justify-content-center w-full gap-2">
-        @if (loading) {
-        <p-progressSpinner
-          [style]="{ width: '20px', height: '20px' }"
-          strokeWidth="4"
-          styleClass="custom-spinner"
-        ></p-progressSpinner>
-        }
-        <span class="text-center">{{
-          loading ? 'Cargando...' : 'Registrarse'
-        }}</span>
+      <div class="flex flex-row gap-3">
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="userName" class="font-medium">Nombre de usuario</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user"></i>
+            <input
+              id="userName"
+              type="text"
+              pInputText
+              class="w-full"
+              formControlName="userName"
+              placeholder="Ingrese su nombre de usuario..."
+              [ngClass]="{
+                'ng-invalid ng-dirty': getFieldError('userName')
+              }"
+            />
+          </span>
+          @if (getFieldError('userName')) {
+          <small class="p-error">{{ getFieldError('userName') }}</small>
+          }
+        </div>
+
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="knownAs" class="font-medium">Apodo</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-id-card"></i>
+            <input
+              id="knownAs"
+              type="text"
+              pInputText
+              class="w-full"
+              formControlName="knownAs"
+              placeholder="Ingrese su apodo..."
+              [ngClass]="{
+                'ng-invalid ng-dirty': getFieldError('knownAs')
+              }"
+            />
+          </span>
+          @if (getFieldError('knownAs')) {
+          <small class="p-error">{{ getFieldError('knownAs') }}</small>
+          }
+        </div>
       </div>
-    </p-button>
 
-    <div class="text-center mt-3">
-      <span class="text-600">¿Ya tienes una cuenta? </span>
+      <div class="flex flex-row gap-3">
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="email" class="font-medium">Correo electrónico</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope"></i>
+            <input
+              id="email"
+              type="email"
+              pInputText
+              class="w-full"
+              formControlName="email"
+              placeholder="Ingrese su correo electrónico..."
+              [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('email') }"
+            />
+          </span>
+          @if (getFieldError('email')) {
+          <small class="p-error">{{ getFieldError('email') }}</small>
+          }
+        </div>
 
-      <a
-        routerLink="/login"
-        class="font-medium text-primary no-underline hover:underline cursor-pointer"
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="birthDate" class="font-medium">Fecha de nacimiento</label>
+          <p-calendar
+            id="birthDate"
+            formControlName="birthDate"
+            [showIcon]="true"
+            [maxDate]="maxDate"
+            dateFormat="dd/mm/yy"
+            placeholder="Seleccione su fecha de nacimiento..."
+            styleClass="w-full"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError('birthDate')
+            }"
+          >
+          </p-calendar>
+          @if (getFieldError('birthDate')) {
+          <small class="p-error">{{ getFieldError('birthDate') }}</small>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-3">
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="gender" class="font-medium">Género</label>
+          <p-dropdown
+            id="gender"
+            formControlName="gender"
+            [options]="genderOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Seleccione su género..."
+            styleClass="w-full"
+            [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('gender') }"
+          >
+          </p-dropdown>
+          @if (getFieldError('gender')) {
+          <small class="p-error">{{ getFieldError('gender') }}</small>
+          }
+        </div>
+
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="city" class="font-medium">Ciudad</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-building"></i>
+            <input
+              id="city"
+              type="text"
+              pInputText
+              class="w-full"
+              formControlName="city"
+              placeholder="Ingrese su ciudad..."
+              [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('city') }"
+            />
+          </span>
+          @if (getFieldError('city')) {
+          <small class="p-error">{{ getFieldError('city') }}</small>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-3">
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="country" class="font-medium">País</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-globe"></i>
+            <input
+              id="country"
+              type="text"
+              pInputText
+              class="w-full"
+              formControlName="country"
+              placeholder="Ingrese su país..."
+              [ngClass]="{
+                'ng-invalid ng-dirty': getFieldError('country')
+              }"
+            />
+          </span>
+          @if (getFieldError('country')) {
+          <small class="p-error">{{ getFieldError('country') }}</small>
+          }
+        </div>
+
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="password" class="font-medium">Contraseña</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            [toggleMask]="true"
+            placeholder="Ingrese su contraseña..."
+            styleClass="w-full"
+            [inputStyle]="{ width: '100%' }"
+            [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('password') }"
+          >
+          </p-password>
+          @if (getFieldError('password')) {
+          <small class="p-error">{{ getFieldError('password') }}</small>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-3">
+        <div class="w-20rem flex flex-column gap-2">
+          <label for="confirmPassword" class="font-medium"
+            >Confirmar contraseña</label
+          >
+          <p-password
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            placeholder="Confirme su contraseña..."
+            styleClass="w-full"
+            [inputStyle]="{ width: '100%' }"
+            [ngClass]="{
+              'ng-invalid ng-dirty': getFieldError('confirmPassword')
+            }"
+          >
+          </p-password>
+          @if (getFieldError('confirmPassword')) {
+          <small class="p-error">{{ getFieldError('confirmPassword') }}</small>
+          }
+        </div>
+      </div>
+
+      <p-button
+        type="submit"
+        [outlined]="true"
+        styleClass="w-full"
+        [disabled]="!registerForm.valid || loading"
       >
-        Inicia sesión aquí
-      </a>
-    </div>
-  </form>
-</p-card>
+        <div
+          class="flex align-items-center justify-content-center w-full gap-2"
+        >
+          @if (loading) {
+          <p-progressSpinner
+            [style]="{ width: '20px', height: '20px' }"
+            strokeWidth="4"
+            styleClass="custom-spinner"
+          ></p-progressSpinner>
+          }
+          <span class="text-center">{{
+            loading ? 'Cargando...' : 'Registrarse'
+          }}</span>
+        </div>
+      </p-button>
+
+      <div class="text-center mt-3">
+        <span class="text-600">¿Ya tienes una cuenta? </span>
+
+        <a
+          routerLink="/login"
+          class="font-medium text-primary no-underline hover:underline cursor-pointer"
+        >
+          Inicia sesión aquí
+        </a>
+      </div>
+    </form>
+  </p-card>
+</div>

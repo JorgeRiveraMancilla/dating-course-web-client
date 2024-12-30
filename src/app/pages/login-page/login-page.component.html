@@ -1,76 +1,80 @@
-<p-card styleClass="shadow-3">
-  <h1 class="text-center text-2xl font-medium my-0 pb-3">Iniciar sesión</h1>
+<div class="flex justify-content-center">
+  <p-card styleClass="shadow-3">
+    <h1 class="text-center text-2xl font-medium my-0 pb-3">Iniciar sesión</h1>
 
-  <form
-    [formGroup]="loginForm"
-    (ngSubmit)="onSubmit()"
-    class="flex flex-column gap-3"
-  >
-    <div class="w-20rem flex flex-column gap-2">
-      <label for="email" class="font-medium">Correo electrónico</label>
-      <span class="p-input-icon-left w-full">
-        <i class="pi pi-envelope"></i>
-        <input
-          id="email"
-          type="email"
-          pInputText
-          class="w-full"
-          formControlName="email"
-          placeholder="Ingrese su correo electrónico..."
-          [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('email') }"
-        />
-      </span>
-      @if (getFieldError('email')) {
-      <small class="p-error">{{ getFieldError('email') }}</small>
-      }
-    </div>
-
-    <div class="w-20rem flex flex-column gap-2">
-      <label for="password" class="font-medium">Contraseña</label>
-      <p-password
-        id="password"
-        formControlName="password"
-        [feedback]="false"
-        [toggleMask]="true"
-        placeholder="Ingrese su contraseña..."
-        styleClass="w-full"
-        [inputStyle]="{ width: '100%' }"
-        [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('password') }"
-      >
-      </p-password>
-      @if (getFieldError('password')) {
-      <small class="p-error">{{ getFieldError('password') }}</small>
-      }
-    </div>
-
-    <p-button
-      type="submit"
-      [outlined]="true"
-      styleClass="w-full"
-      [disabled]="!loginForm.valid || loading"
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-column gap-3"
     >
-      <div class="flex align-items-center justify-content-center w-full gap-2">
-        @if (loading) {
-        <p-progressSpinner
-          [style]="{ width: '20px', height: '20px' }"
-          strokeWidth="4"
-          styleClass="custom-spinner"
-        ></p-progressSpinner>
+      <div class="w-20rem flex flex-column gap-2">
+        <label for="email" class="font-medium">Correo electrónico</label>
+        <span class="p-input-icon-left w-full">
+          <i class="pi pi-envelope"></i>
+          <input
+            id="email"
+            type="email"
+            pInputText
+            class="w-full"
+            formControlName="email"
+            placeholder="Ingrese su correo electrónico..."
+            [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('email') }"
+          />
+        </span>
+        @if (getFieldError('email')) {
+        <small class="p-error">{{ getFieldError('email') }}</small>
         }
-        <span class="text-center">{{
-          loading ? 'Cargando...' : 'Iniciar sesión'
-        }}</span>
       </div>
-    </p-button>
 
-    <div class="text-center mt-3">
-      <span class="text-600">¿No tienes una cuenta?</span>
-      <a
-        routerLink="/register"
-        class="font-medium text-primary no-underline hover:underline cursor-pointer"
+      <div class="w-20rem flex flex-column gap-2">
+        <label for="password" class="font-medium">Contraseña</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          placeholder="Ingrese su contraseña..."
+          styleClass="w-full"
+          [inputStyle]="{ width: '100%' }"
+          [ngClass]="{ 'ng-invalid ng-dirty': getFieldError('password') }"
+        >
+        </p-password>
+        @if (getFieldError('password')) {
+        <small class="p-error">{{ getFieldError('password') }}</small>
+        }
+      </div>
+
+      <p-button
+        type="submit"
+        [outlined]="true"
+        styleClass="w-full"
+        [disabled]="!loginForm.valid || loading"
       >
-        Regístrate aquí
-      </a>
-    </div>
-  </form>
-</p-card>
+        <div
+          class="flex align-items-center justify-content-center w-full gap-2"
+        >
+          @if (loading) {
+          <p-progressSpinner
+            [style]="{ width: '20px', height: '20px' }"
+            strokeWidth="4"
+            styleClass="custom-spinner"
+          ></p-progressSpinner>
+          }
+          <span class="text-center">{{
+            loading ? 'Cargando...' : 'Iniciar sesión'
+          }}</span>
+        </div>
+      </p-button>
+
+      <div class="text-center mt-3">
+        <span class="text-600">¿No tienes una cuenta?</span>
+        <a
+          routerLink="/register"
+          class="font-medium text-primary no-underline hover:underline cursor-pointer"
+        >
+          Regístrate aquí
+        </a>
+      </div>
+    </form>
+  </p-card>
+</div>
