@@ -93,7 +93,10 @@
       <div class="flex align-items-center gap-2" [style]="{ maxWidth: '85%' }">
         <i
           class="pi pi-circle-fill shrink-0"
-          [style]="{ color: '#4CAF50', 'font-size': '0.75rem' }"
+          [style]="{
+            color: isOnline() ? '#4CAF50' : '#DC3545',
+            'font-size': '0.75rem'
+          }"
         ></i>
         <span
           class="text-ellipsis block white-space-nowrap overflow-hidden"
