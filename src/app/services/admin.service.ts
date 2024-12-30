@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.development';
 import { UserWithRole } from '../interfaces/user-with-role';
 import { PhotoForApproval } from '../interfaces/photo-for-approval';
 import { map, Observable } from 'rxjs';
