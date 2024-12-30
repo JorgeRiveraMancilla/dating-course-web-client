@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.development';
 import { Auth } from '../interfaces/auth';
 import { LoginForm } from '../interfaces/login-form';
 import { RegisterForm } from '../interfaces/register-form';
@@ -9,6 +9,7 @@ import { StorageService } from './storage.service';
 import { TokenService } from './token.service';
 import { AuthState } from '../interfaces/auth-state';
 import { ChangePasswordForm } from '../interfaces/change-password-form';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly storage = inject(StorageService);
   private readonly tokenService = inject(TokenService);
+  private presenceService = inject(PresenceService);
   private readonly baseUrl = environment.apiUrl;
 
   private readonly state = signal<AuthState>({
@@ -87,9 +89,13 @@ export class AuthService {
     return this.http.post<void>(`${this.baseUrl}/account/register`, userData);
   }
 
-  logout(): void {
-    this.storage.removeItem(environment.authStorageKey);
-    this.clearAuthState();
+  async logout(): Promise<void> {
+    try {
+      await this.presenceService.stopHubConnection();
+    } finally {
+      this.storage.removeItem(environment.authStorageKey);
+      this.clearAuthState();
+    }
   }
 
   changePassword(changePasswordData: ChangePasswordForm): Observable<void> {
@@ -120,6 +126,8 @@ export class AuthService {
       roles,
       isInitialized: true,
     });
+
+    this.presenceService.createHubConnection(auth);
   }
 
   private clearAuthState(): void {
@@ -128,5 +136,6 @@ export class AuthService {
       roles: [],
       isInitialized: true,
     });
+    this.presenceService.stopHubConnection();
   }
 }
