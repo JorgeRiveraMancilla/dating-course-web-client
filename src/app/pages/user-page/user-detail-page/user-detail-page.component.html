@@ -1,57 +1,62 @@
-<div class="flex gap-5 justify-content-center px-5">
-  <div [style]="{ width: '18rem' }">
-    <p-card styleClass="h-full">
-      <ng-template pTemplate="header">
+<!-- user-detail-page.component.html -->
+<div class="grid h-full m-0">
+  <!-- Left Card -->
+  <div class="col-3">
+    <p-card styleClass="shadow-5">
+      <div class="flex flex-column gap-3">
         <img
           [src]="user.mainPhoto?.url || defaultImageUrl"
           [alt]="user.knownAs"
-          [style]="{ width: '100%', height: '100%', objectFit: 'cover' }"
+          class="w-full"
         />
-      </ng-template>
-
-      <div class="flex flex-column gap-3">
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-circle-fill text-sm text-green-500"></i>
-          <span class="text-green-500">Conectado ahora</span>
-        </div>
 
         @for (detail of userDetails; track $index) {
-        <div class="user-detail">
-          <span class="font-bold block mb-2">{{ detail.label }}:</span>
-          <span>{{ detail.value }}</span>
+        <div class="flex flex-column gap-1">
+          <h3 class="m-0">{{ detail.title }}:</h3>
+          <p class="m-0">{{ detail.content }}</p>
         </div>
         }
-      </div>
 
-      <ng-template pTemplate="footer">
-        <div class="flex gap-2 justify-content-center">
-          <p-button
-            label="Me gusta"
-            icon="pi pi-heart"
-            [outlined]="!user.isLiked"
-            styleClass="flex-1"
-            (onClick)="onLikeClick()"
-          ></p-button>
+        <div class="flex justify-content-between align-items-center">
+          <div class="flex flex-row gap-2 align-items-center">
+            <i
+              class="pi pi-circle-fill text-sm"
+              [ngClass]="isOnline() ? 'text-green-500' : 'text-gray-500'"
+            ></i>
+            <span [ngClass]="isOnline() ? 'text-green-500' : 'text-gray-500'">
+              {{ isOnline() ? 'Conectado ahora' : 'Desconectado' }}
+            </span>
+          </div>
 
-          <p-button
-            label="Mensaje"
-            icon="pi pi-send"
-            severity="success"
-            styleClass="p-button-outlined flex-1"
-            (onClick)="onMessageClick()"
-          ></p-button>
+          <div class="flex flex-row gap-2">
+            <p-button
+              label="Me gusta"
+              icon="pi pi-heart"
+              [outlined]="!user.isLiked"
+              styleClass="w-full"
+              (onClick)="onLikeClick()"
+            ></p-button>
+            <p-button
+              label="Mensaje"
+              icon="pi pi-send"
+              severity="success"
+              styleClass="p-button-outlined w-full"
+              (onClick)="onMessageClick()"
+            ></p-button>
+          </div>
         </div>
-      </ng-template>
+      </div>
     </p-card>
   </div>
 
-  <div [style]="{ width: '70rem' }">
-    <p-tabView [(activeIndex)]="activeTabIndex">
-      <p-tabPanel [header]="'Perfil de ' + user.knownAs">
+  <!-- Right Tabs -->
+  <div class="col-9">
+    <p-tabView [(activeIndex)]="activeTabIndex" class="h-full">
+      <p-tabPanel header="Perfil">
         <div class="flex flex-column gap-4">
           @for (section of userSections; track $index) {
           <div>
-            <h3 class="mt-0 mb-3">{{ section.title }}</h3>
+            <h3 class="mt-0">{{ section.title }}</h3>
             <p-divider></p-divider>
             <p class="line-height-3">{{ section.content }}</p>
           </div>
@@ -65,7 +70,7 @@
             [value]="userImages"
             [showThumbnails]="true"
             [responsiveOptions]="galleriaResponsiveOptions"
-            [containerStyle]="{ 'max-width': '640px' }"
+            [containerStyle]="{ 'max-width': '800px' }"
             [numVisible]="5"
             [circular]="true"
           >
@@ -73,7 +78,7 @@
               <img
                 [src]="photo.url"
                 [alt]="'Photo ' + photo.id"
-                style="width: 100%; height: 400px; object-fit: cover"
+                style="width: 100%; height: 500px; object-fit: cover"
               />
             </ng-template>
             <ng-template pTemplate="thumbnail" let-photo>
@@ -88,9 +93,7 @@
       </p-tabPanel>
 
       <p-tabPanel header="Mensajes">
-        <div class="flex align-items-center justify-content-center">
-          <span class="text-500">Mensajes próximamente...</span>
-        </div>
+        <app-chat class="block w-full h-full" />
       </p-tabPanel>
     </p-tabView>
   </div>

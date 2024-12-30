@@ -1,0 +1,55 @@
+<div class="flex flex-column surface-ground h-30rem">
+  <!-- Contenedor de mensajes -->
+  <div class="flex-grow-1 overflow-y-auto p-4">
+    @for (message of chatService.messageThread$ | async; track $index) {
+    <div
+      class="flex mb-3"
+      [ngClass]="{
+        'justify-content-end':
+          message.senderId === authService.getCurrentAuth()?.userId
+      }"
+    >
+      <div
+        [ngClass]="{
+          'bg-primary-100 text-primary-900':
+            message.senderId === authService.getCurrentAuth()?.userId,
+          'bg-surface-200 text-surface-900':
+            message.senderId !== authService.getCurrentAuth()?.userId
+        }"
+        class="p-3 border-round-2xl inline-block max-w-max shadow-1"
+      >
+        <div class="line-height-3 break-word">{{ message.content }}</div>
+        <div class="text-500 text-xs mt-2 flex align-items-center gap-2">
+          <span>{{ message.messageSent | timeAgo }}</span>
+          @if (message.dateRead && message.senderId ===
+          authService.getCurrentAuth()?.userId) {
+          <i class="pi pi-check-circle text-success"></i>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Footer con input simplificado -->
+  <div class="flex-none p-4 surface-card border-top-1 border-300">
+    <div class="flex gap-2">
+      <div class="flex-grow-1">
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="messageContent"
+          class="w-full"
+          placeholder="Escribe un mensaje..."
+          (keyup.enter)="sendMessage()"
+        />
+      </div>
+      <p-button
+        icon="pi pi-send"
+        severity="primary"
+        [loading]="loading"
+        (onClick)="sendMessage()"
+      ></p-button>
+    </div>
+  </div>
+</div>
