@@ -9,16 +9,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
 
   return next(req).pipe(
-    catchError((error) => {
+    catchError(async (error) => {
       if (error) {
         switch (error.status) {
           case 401:
-            authService.logout();
-            router.navigate(['/login']);
+            await authService.logout();
+            await router.navigate(['/login']);
             break;
         }
       }
-
       throw error;
     })
   );
