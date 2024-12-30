@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { finalize } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
+import { environment } from '../../../../../../environments/environment.development';
 import { HasUnsavedChanges } from '../../../../../guards/prevent-unsaved-changes.guard';
 import { AuthService } from '../../../../../services/auth.service';
 import { FormValidatorService } from '../../../../../services/form-validator.service';

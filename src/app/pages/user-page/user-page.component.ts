@@ -19,7 +19,7 @@ import { User } from '../../interfaces/user';
 import { UserParams } from '../../interfaces/user-params';
 import { FormValidatorService } from '../../services/form-validator.service';
 import { UserService } from '../../services/user.service';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { AuthService } from '../../services/auth.service';
 import { UserCardComponent } from './components/user-card/user-card.component';
 

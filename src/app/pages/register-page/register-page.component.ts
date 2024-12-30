@@ -17,7 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { finalize } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { RegisterForm } from '../../interfaces/register-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';

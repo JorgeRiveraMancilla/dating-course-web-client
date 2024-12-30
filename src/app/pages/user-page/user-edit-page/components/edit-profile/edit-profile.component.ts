@@ -14,7 +14,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { finalize } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
+import { environment } from '../../../../../../environments/environment.development';
 import { HasUnsavedChanges } from '../../../../../guards/prevent-unsaved-changes.guard';
 import { ProfileForm } from '../../../../../interfaces/profile-form';
 import { User } from '../../../../../interfaces/user';

@@ -14,7 +14,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { LoginForm } from '../../interfaces/login-form';
 import { AuthService } from '../../services/auth.service';
 import { FormValidatorService } from '../../services/form-validator.service';
