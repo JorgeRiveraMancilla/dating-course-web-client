@@ -73,8 +73,8 @@ export class NavbarComponent {
     }
   }
 
-  private onLogoutClick(): void {
-    this.authService.logout();
-    this.router.navigate(['login']);
+  private async onLogoutClick(): Promise<void> {
+    await this.authService.logout();
+    await this.router.navigate(['login']);
   }
 }
