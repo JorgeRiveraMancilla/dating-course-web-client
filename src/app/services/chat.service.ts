@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Message } from '../interfaces/message';
 import { BehaviorSubject, take } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Auth } from '../interfaces/auth';
 import { NewMessage } from '../interfaces/new-message';
 

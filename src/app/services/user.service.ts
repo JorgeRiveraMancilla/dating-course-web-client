@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, map } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { PaginatedResult } from '../interfaces/paginated-result';
 import { User } from '../interfaces/user';
 import { Photo } from '../interfaces/photo';

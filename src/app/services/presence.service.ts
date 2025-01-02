@@ -6,7 +6,7 @@ import {
   HubConnectionState,
 } from '@microsoft/signalr';
 import { MessageService } from 'primeng/api';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Auth } from '../interfaces/auth';
 
 @Injectable({

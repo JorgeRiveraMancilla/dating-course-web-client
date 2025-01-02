@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { Auth } from '../interfaces/auth';
 import { LoginForm } from '../interfaces/login-form';
 import { RegisterForm } from '../interfaces/register-form';

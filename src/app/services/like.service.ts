@@ -2,7 +2,7 @@ import { LikeParams } from './../interfaces/like-params';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { PaginatedResult } from '../interfaces/paginated-result';
 import { User } from '../interfaces/user';
 
