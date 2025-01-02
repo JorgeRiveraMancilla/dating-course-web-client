@@ -113,6 +113,14 @@
               "src/**/*.html"
             ]
           }
+        },
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/dating-course-web-client",
+            "netlifyToken": "y",
+            "siteId": "y"
+          }
         }
       }
     }
