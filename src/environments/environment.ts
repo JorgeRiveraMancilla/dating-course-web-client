@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: process.env['API_URL'],
-  hubUrl: process.env['HUB_URL'],
+  apiUrl: 'dating-course-evcbghbugadafues.brazilsouth-01.azurewebsites.netapi',
+  hubUrl: 'dating-course-evcbghbugadafues.brazilsouth-01.azurewebsites.nethub',
   authStorageKey: 'auth',
   debounceMilliseconds: 0,
   defaultUserImageUrl: '/assets/user.png',
