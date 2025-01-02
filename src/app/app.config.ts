@@ -3,8 +3,7 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideClientHydration } from '@angular/platform-browser';
+import { ApplicationConfig } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -18,9 +17,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([jwtInterceptor, errorInterceptor])
     ),
-    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideClientHydration(),
     provideAnimations(),
     MessageService,
     ConfirmationService,
