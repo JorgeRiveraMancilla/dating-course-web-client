@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/nginx",
+      "use": "@vercel/node",
       "config": {
         "buildCommand": "npm run build",
         "outputDirectory": "dist/dating-course-web-client/browser"
