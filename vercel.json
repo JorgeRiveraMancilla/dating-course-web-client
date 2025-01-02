@@ -2,14 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/dating-course-web-client/server/server.mjs",
-      "use": "@vercel/node"
+      "src": "package.json",
+      "use": "@vercel/nginx",
+      "config": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist/dating-course-web-client/browser"
+      }
     }
   ],
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "dist/dating-course-web-client/server/server.mjs"
+      "dest": "/index.html"
     }
   ]
 }
