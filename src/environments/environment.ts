@@ -1,12 +1,8 @@
-declare const window: Window & {
-  __env: { [key: string]: string };
-};
-
 export const environment = {
   production: true,
-  apiUrl: window.__env?.['API_URL'] || 'api',
-  hubUrl: window.__env?.['HUB_URL'] || 'hub',
+  apiUrl: process.env['VITE_API_URL'] || 'api',
+  hubUrl: process.env['VITE_HUB_URL'] || 'hub',
   authStorageKey: 'auth',
-  debounceMilliseconds: 3000,
+  debounceMilliseconds: 0,
   defaultUserImageUrl: '/assets/user.png',
 };
