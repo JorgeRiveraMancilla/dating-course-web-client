@@ -1,27 +1,66 @@
-# DatingCourseWebClient
+# Dating Course Web Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.12.
+This is a Dating Course Web Client built with Angular 18 that integrates with PrimeNG for UI components and includes real-time communication features using SignalR.
 
-## Development server
+This project is based on the Udemy course [Build an app with ASPNET Core and Angular from scratch](https://www.udemy.com/course/build-an-app-with-aspnet-core-and-angular-from-scratch) by Neil Cummings.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Technologies & Features
 
-## Code scaffolding
+- **Framework**: 
+  - Angular 18.2.0
+  - Express.js 4.18.2 (SSR support)
+- **UI Components & Styling**:
+  - PrimeNG 17.18.12
+  - PrimeFlex 3.3.1
+  - PrimeIcons 7.0.0
+- **Real-time Communication**:
+  - SignalR 8.0.7 for chat and presence tracking
+- **State Management & Utilities**:
+  - RxJS 7.8.0
+  - TypeScript 5.5.2
+- **Development Tools**:
+  - Angular CLI
+  - ESLint for code quality
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Prerequisites
 
-## Build
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (v18.x or higher)
+- [npm](https://www.npmjs.com/) (v8.x or higher)
+- [Git](https://git-scm.com/downloads)
+- [Visual Studio Code](https://code.visualstudio.com/) or preferred IDE
+- [Backend API](https://github.com/JorgeRiveraMancilla/dating-course-api)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Getting Started
 
-## Running unit tests
+Follow these steps to get the project up and running on your local machine:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 1. Clone the Repository
 
-## Running end-to-end tests
+```bash
+# Clone the project
+git clone https://github.com/JorgeRiveraMancilla/dating-course-web-client.git
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+# Navigate to the project directory
+cd dating-course-web-client
+```
 
-## Further help
+### 2. Install Dependencies
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm install
+```
+
+### 3. Start the Development Server
+
+```bash
+ng serve -o
+```
+
+The application will be available at:
+- `http://localhost:4200`
+
+## Backend Requirements
+
+This application requires the Dating Course API to be running. You can find the backend repository here:
+[Dating Course API](https://github.com/JorgeRiveraMancilla/dating-course-api)
